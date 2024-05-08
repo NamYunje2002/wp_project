@@ -82,20 +82,20 @@
 </head>
 <body>
 <div class="container">
-<h2>asdf</h2>
+<h2>MAIN</h2>
     <div class="wrapper">
-        <form action="" method="post">
+        <form action="./login.php" method="post">
             <input type="text" id="id" placeholder="ID" />
-            <input type="password" id="pw" placeholder="PW" />
+            <input type="password" id="pw" placeholder="Password" />
             <input type="submit" id="signUpButton" value="Log In" />
             <a href="">Forgot password?</a>
         </form>
         <hr color="#d6d6d6" width="90%">
-        <input type="button" id="signUpButton" value="Sign Up" onclick="location.href='./signUp.php'"/>
+        <input type="button" id="signUpButton" value="Sign Up" onclick="location.href='signUp.html'"/>
     </div>
 </div>
     <script>
-        let a;
+
     </script>
 </body>
 </html>
