@@ -121,29 +121,30 @@
 <div class="container">
     <h2>SIGN UP</h2>
     <div class="wrapper">
-        <form action="" method="post">
-            <input type="text" id="id" placeholder="ID" />
-            <input type="password" id="pw" placeholder="Password" />
-            <input type="text" id="email" placeholder="Email" />
+        <form action="./signUp.php" method="post">
+            <input type="text" id="id" name="id" placeholder="ID" />
+            <input type="password" id="pw" name="pw" placeholder="Password" />
+            <input type="text" id="name" name="name" placeholder="Name" />
+            <input type="text" id="email" name="email" placeholder="Email" />
             <div class="left_container">
                 <span>Birthday</span>
             </div>
             <div>
-                <select id="month"><option selected disabled>Month</option></select>
-                <select id="day"><option selected disabled>Day</option></select>
-                <select id="year"><option selected disabled>Year</option></select>
+                <select id="month" name="month"><option selected disabled>Month</option></select>
+                <select id="day" name="day"><option selected disabled>Day</option></select>
+                <select id="year" name="year"><option selected disabled>Year</option></select>
             </div>
             <div class="left_container">
                 <span>Gencder</span>
             </div>
             <div class="left_container">
-                <label for="male">Male</label><input type="radio" name="gender" value="male" id="male">
-                <label for="female">Female</label><input type="radio" name="gender" value="female" id="female">
+                <label for="male">Male</label><input type="radio" name="gender" value="m" id="male">
+                <label for="female">Female</label><input type="radio" name="gender" value="f" id="female">
             </div>
-            <input type="submit" id="signUpButton" value="Sign Up" />
+            <input type="submit" value="Sign Up" />
         </form>
         <hr color="#d6d6d6" width="90%">
-        <input type="button" id="signUpButton" value="Cancel" onclick="location.href='./index.php'"/>
+        <input type="button" value="Cancel" onclick="location.href='./index.php'"/>
     </div>
 </div>
 <script>
