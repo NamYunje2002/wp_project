@@ -126,6 +126,10 @@
         div#pw_valid {
             height: 90px;
         }
+
+        div#email_valid, #birth_valid, #gender_valid {
+            height: 50px;
+        }
     </style>
 </head>
 <body>
@@ -193,14 +197,8 @@
         <input type="button" value="Cancel" onclick="location.href='/wp_project/'"/>
     </div>
 </div>
+<script src="./signup_valid_chk.js"></script>
 <script>
-    const regObj = {
-        id : '^[a-z0-9]{6,14}$',
-        pw : '^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{6,15}$',
-        name : '^[a-z0-9]{2,14}$',
-        email : '^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
-    };
-
     let monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     let monthSelect = document.getElementById('month');
     for(let i = 0; i < monthArr.length; i++) {
@@ -227,37 +225,28 @@
         yearSelect.appendChild(option);
     }
 
-    function executeInputValid(k) {
-        return () => {
-            let allFieldsValid = true;
-
-            let fieldId = fieldArray[k];
-            let userInput = document.getElementById(fieldId);
-            let valid = document.getElementById(fieldId + '_valid');
-            let regExp = new RegExp(regObj[fieldId]);
-            if (!regExp.test(userInput.value)) {
-                userInput.style.border = '1px solid #ff0000';
-                valid.style.display = 'block';
-                allFieldsValid = false;
-            } else {
-                userInput.style.border = '1px solid #121481';
-                valid.style.display = 'none';
-            }
-            return allFieldsValid;
-        };
-    }
-
-    let fieldArray = ['id', 'pw', 'name', 'email'];
-    for (let i = 0; i < fieldArray.length; i++) {
-        document.getElementById(fieldArray[i]).addEventListener("blur", executeInputValid(i));
-    }
-
     document.getElementById('submit_btn').addEventListener("click", () => {
         let allFieldsValid = true;
         for (let i = 0; i < fieldArray.length; i++) {
-            let isFieldValid = executeInputValid(i)();
-            if(!isFieldValid) allFieldsValid = false;
+            let inputValid = isInputValid(i)();
+            if(!inputValid) allFieldsValid = false;
         }
+
+        for(let i = 0; i < birthArray.length; i++) {
+            let birthValid = isBirthValid(i)();
+            if(!birthValid) allFieldsValid = false;
+        }
+
+        let male = document.getElementById('male');
+        let female = document.getElementById('female');
+        let genderValid = document.getElementById('gender_valid');
+        if(!male.checked && !female.checked) {
+            genderValid.style.display = 'block';
+            allFieldsValid = false;
+        } else {
+            genderValid.style.display = 'none';
+        }
+
         if(allFieldsValid) document.getElementById('signup_form').submit();
     });
 </script>
