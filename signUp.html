@@ -48,7 +48,7 @@
             color: #121481;
         }
 
-        input[type=submit] {
+        input#submit_btn {
             margin-bottom: 10px;
             height: 75px;
             background-color: #121481;
@@ -115,17 +115,56 @@
         label {
             color: #121481;
         }
+
+        div.valid_chk {
+            width: 250px;
+            height: 70px;
+            color: #ff0000;
+            display: none;
+        }
+
+        div#pw_valid {
+            height: 90px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h2>SIGN UP</h2>
     <div class="wrapper">
-        <form action="./signUp.php" method="post">
-            <input type="text" id="id" name="id" placeholder="ID" />
-            <input type="password" id="pw" name="pw" placeholder="Password" />
-            <input type="text" id="name" name="name" placeholder="Name" />
-            <input type="text" id="email" name="email" placeholder="Email" />
+        <form id="signup_form" action="./signUp.php" method="post">
+            <div class="left_container">
+                <span>ID</span>
+            </div>
+            <input type="text" id="id" name="id" />
+            <div class="left_container">
+                <div class="valid_chk" id="id_valid">Enter a combination of 6 to 14 numbers and characters.</div>
+            </div>
+
+            <div class="left_container">
+                <span>Password</span>
+            </div>
+            <input type="password" id="pw" name="pw" />
+            <div class="left_container">
+                <div class="valid_chk" id="pw_valid">Enter a combination of 6 to 14 numbers, characters and punctuation marks.</div>
+            </div>
+
+            <div class="left_container">
+                <span>Name</span>
+            </div>
+            <input type="text" id="name" name="name" />
+            <div class="left_container">
+                <div class="valid_chk" id="name_valid">Enter a combination of 2 to 14 numbers and characters.</div>
+            </div>
+
+            <div class="left_container">
+                <span>Email</span>
+            </div>
+            <input type="text" id="email" name="email" />
+            <div class="left_container">
+                <div class="valid_chk" id="email_valid">Enter a valid email.</div>
+            </div>
+
             <div class="left_container">
                 <span>Birthday</span>
             </div>
@@ -135,19 +174,33 @@
                 <select id="year" name="year"><option selected disabled>Year</option></select>
             </div>
             <div class="left_container">
+                <div class="valid_chk" id="birth_valid">Select your date of birth.</div>
+            </div>
+
+            <div class="left_container">
                 <span>Gencder</span>
             </div>
             <div class="left_container">
                 <label for="male">Male</label><input type="radio" name="gender" value="m" id="male">
                 <label for="female">Female</label><input type="radio" name="gender" value="f" id="female">
             </div>
-            <input type="submit" value="Sign Up" />
+            <div class="left_container">
+                <div class="valid_chk" id="gender_valid">Select your gender.</div>
+            </div>
+            <input type="button" id="submit_btn" value="Sign Up"/>
         </form>
         <hr color="#d6d6d6" width="90%">
-        <input type="button" value="Cancel" onclick="location.href='./index.php'"/>
+        <input type="button" value="Cancel" onclick="location.href='/wp_project/'"/>
     </div>
 </div>
 <script>
+    const regObj = {
+        id : '^[a-z0-9]{6,14}$',
+        pw : '^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{6,15}$',
+        name : '^[a-z0-9]{2,14}$',
+        email : '^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
+    };
+
     let monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     let monthSelect = document.getElementById('month');
     for(let i = 0; i < monthArr.length; i++) {
@@ -173,6 +226,40 @@
         option.text = i;
         yearSelect.appendChild(option);
     }
+
+    function executeInputValid(k) {
+        return () => {
+            let allFieldsValid = true;
+
+            let fieldId = fieldArray[k];
+            let userInput = document.getElementById(fieldId);
+            let valid = document.getElementById(fieldId + '_valid');
+            let regExp = new RegExp(regObj[fieldId]);
+            if (!regExp.test(userInput.value)) {
+                userInput.style.border = '1px solid #ff0000';
+                valid.style.display = 'block';
+                allFieldsValid = false;
+            } else {
+                userInput.style.border = '1px solid #121481';
+                valid.style.display = 'none';
+            }
+            return allFieldsValid;
+        };
+    }
+
+    let fieldArray = ['id', 'pw', 'name', 'email'];
+    for (let i = 0; i < fieldArray.length; i++) {
+        document.getElementById(fieldArray[i]).addEventListener("blur", executeInputValid(i));
+    }
+
+    document.getElementById('submit_btn').addEventListener("click", () => {
+        let allFieldsValid = true;
+        for (let i = 0; i < fieldArray.length; i++) {
+            let isFieldValid = executeInputValid(i)();
+            if(!isFieldValid) allFieldsValid = false;
+        }
+        if(allFieldsValid) document.getElementById('signup_form').submit();
+    });
 </script>
 </body>
 </html>
