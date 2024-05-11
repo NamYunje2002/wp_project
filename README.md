@@ -1,2 +1,2 @@
 # wp_project
-Web programming project
+It is web programming project.
