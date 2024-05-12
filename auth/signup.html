@@ -140,6 +140,11 @@
             background-color: #121481;
             color: #ffffff;
         }
+
+        .disabled {
+            pointer-events: none;
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -154,11 +159,10 @@
                 <input type="text" id="id" name="id" />
 
             </div>
-
-                <input type="button" id="dp_chk" value="Dulicate Check"/>
+            <input type="button" id="dp_chk" value="Duplicate Check"/>
 
             <div class="left_container">
-                <div class="valid_chk" id="id_valid">Enter a combination of 6 to 14 numbers and characters.</div>
+                <div class="valid_chk" id="id_valid" >Enter a combination of 6 to 14 numbers and characters.</div>
             </div>
 
             <div class="left_container">
@@ -213,8 +217,34 @@
         <input type="button" value="Cancel" onclick="location.href='/wp_project/'"/>
     </div>
 </div>
-<script src="auth/signup_valid_chk.js"></script>
+<script src="signup_valid_chk.js"></script>
 <script>
+    let isIdDp = true;
+    let dpChk = document.getElementById('dp_chk');
+    dpChk.addEventListener('click', (e) => {
+        if (isInputValid(0)()) {
+            let id = document.getElementById('id');
+            let url = "./id_duplicate_chk.php?userid=" + id.value;
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    let msg = id.value;
+                    if(Number(data) === 0) {
+                        msg += " is possible!";
+                        isIdDp = false;
+                        id.classList.add('disabled');
+                        dpChk.classList.add('disabled');
+                    } else {
+                        msg += " is duplicated.\nEnter a different ID.";
+                    }
+                    alert(msg);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    });
+
     let monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     let monthSelect = document.getElementById('month');
     for(let i = 0; i < monthArr.length; i++) {
@@ -256,14 +286,17 @@
         let male = document.getElementById('male');
         let female = document.getElementById('female');
         let genderValid = document.getElementById('gender_valid');
-        if(!male.checked && !female.checked) {
+        if (!male.checked && !female.checked) {
             genderValid.style.display = 'block';
             allFieldsValid = false;
         } else {
             genderValid.style.display = 'none';
         }
 
-        if(allFieldsValid) document.getElementById('signup_form').submit();
+        if (allFieldsValid) {
+            if (isIdDp) alert('Do a duplicate ID check.');
+            else document.getElementById('signup_form').submit();
+        }
     });
 </script>
 </body>
