@@ -1,11 +1,6 @@
 <?php
 if(!empty($_POST['id']) && !empty($_POST['pw']) && !empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['month']) && !empty($_POST['day']) && !empty($_POST['year']) && !empty($_POST['gender'])) {
-    $host = 'localhost:3308/auth/signup.php';
-    $username = 'admin';
-    $password = '';
-    $database = 'wp_project_db';
-
-    $db = new mysqli($host, $username, $password, $database) or die(mysqli_connect_error());
+    include "../db_conn.php";
 
     $userId = $_REQUEST['id'];
     $userPw = $_REQUEST['pw'];
@@ -24,7 +19,7 @@ if(!empty($_POST['id']) && !empty($_POST['pw']) && !empty($_POST['name']) && !em
     mysqli_query($db, $sql);
     mysqli_close($db);
     echo "<script>alert('Successful SignUP!')</script>";
-    echo "<script>location.href='index.php'</script>";
+    echo "<script>location.href='../index.php'</script>";
 }else{
     echo "<script>alert('Invalid value!')</script>";
     echo "<script>location.href='signup.html'</script>";
