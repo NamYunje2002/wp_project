@@ -18,6 +18,7 @@ if(!empty($_POST['id']) && !empty($_POST['pw']) && !empty($_POST['name']) && !em
     $sql = "INSERT INTO users_tb VALUES ('$userId', '$userPw', '$userName', '$userEmail', '$userBirth', '$userGender')";
     mysqli_query($db, $sql);
     mysqli_close($db);
+
     echo "<script>alert('Successful SignUP!')</script>";
     echo "<script>location.href='../index.php'</script>";
 }else{

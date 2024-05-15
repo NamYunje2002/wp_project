@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
     <title>main</title>
-    <meta charset= utf-8>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
         body, html {
             height: 100%;
@@ -18,7 +22,7 @@
             flex-direction: column;
             align-items: center;
             background-color: #ffffff;
-            border: 1px solid #121481;
+            border: 1px solid var(--main-color);
             border-radius: 5px;
         }
 
@@ -41,42 +45,40 @@
             margin: 10px;
             padding: 10px 20px;
             background-color: #ffffff;
-            border: 1px solid #121481;
+            border: 1px solid var(--main-color);
             border-radius: 5px;
             font-size: 20px;
-            color: #121481;
+            color: var(--main-color);
         }
 
         input[type=submit] {
             margin-bottom: 10px;
             height: 75px;
-            background-color: #121481;
+            background-color: var(--main-color);
             color: #ffffff;
             cursor: pointer;
             font-size: 25px;
             font-weight: bold;
         }
 
+        input[type=submit]:hover {
+            background-color: #8B715F;
+        }
+
         a {
             text-decoration: none;
-            color: #121481;
+            color: var(--main-color);
         }
 
         input[type=button] {
             margin: 30px;
             height: 75px;
             background-color: #ffffff;
-            border: 1px solid #121481;
-            color: #121481;
+            border: 1px solid var(--main-color);
+            color: var(--main-color);
             cursor: pointer;
             font-size: 25px;
             font-weight: bold;
-        }
-
-        input[type=button]:hover {
-            background-color: #121481;
-            border: 1px solid #ffffff;
-            color: #ffffff;
         }
     </style>
 </head>
@@ -84,14 +86,14 @@
 <div class="container">
     <h2>MAIN</h2>
     <div class="wrapper">
-        <form action="login.php" method="post">
-            <input type="text" id="id" placeholder="ID" />
-            <input type="password" id="pw" placeholder="Password" />
+        <form action="../user_services/login.php" method="post">
+            <input type="text" id="id" name="id" placeholder="ID" />
+            <input type="password" id="pw" name="pw" placeholder="Password" />
             <input type="submit" value="Log In" />
             <a href="">Forgot password?</a>
         </form>
         <hr color="#d6d6d6" width="90%">
-        <input type="button" value="Sign Up" onclick="location.href='signUp.html'"/>
+        <input type="button" value="Sign Up" onclick="location.href='./signup.html'"/>
     </div>
 </div>
 <script>
