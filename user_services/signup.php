@@ -23,7 +23,7 @@ if(!empty($_POST['id']) && !empty($_POST['pw']) && !empty($_POST['name']) && !em
     echo "<script>location.href='../index.php'</script>";
 }else{
     echo "<script>alert('Invalid value!')</script>";
-    echo "<script>location.href='signup.html'</script>";
+    echo "<script>location.href='/wp_project/user_views/signup.html'</script>";
 }
 exit();
 ?>
