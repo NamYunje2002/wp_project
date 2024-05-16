@@ -2,14 +2,14 @@
 if(!empty($_POST['id']) && !empty($_POST['pw']) && !empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['month']) && !empty($_POST['day']) && !empty($_POST['year']) && !empty($_POST['gender'])) {
     include "../db_conn.php";
 
-    $userId = $_REQUEST['id'];
-    $userPw = $_REQUEST['pw'];
-    $userName = $_REQUEST['name'];
-    $userEmail = $_REQUEST['email'];
-    $userMonth = $_REQUEST['month'];
-    $userDay = $_REQUEST['day'];
-    $userYear = $_REQUEST['year'];
-    $userGender = $_REQUEST['gender'];
+    $userId = $_POST['id'];
+    $userPw = $_POST['pw'];
+    $userName = $_POST['name'];
+    $userEmail = $_POST['email'];
+    $userMonth = $_POST['month'];
+    $userDay = $_POST['day'];
+    $userYear = $_POST['year'];
+    $userGender = $_POST['gender'];
 
     if (strlen($userMonth) == 1) $userMonth = '0' . $userMonth;
     if (strlen($userDay) == 1) $userDay = '0' . $userDay;

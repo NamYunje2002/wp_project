@@ -26,11 +26,6 @@ function isInputValid(k) {
     };
 }
 
-let fieldArray = ['id', 'pw', 'name', 'email'];
-for (let i = 0; i < fieldArray.length; i++) {
-    document.getElementById(fieldArray[i]).addEventListener("blur", isInputValid(i));
-}
-
 function isBirthValid(k) {
     return () => {
         let birthValid = true;
@@ -48,9 +43,4 @@ function isBirthValid(k) {
         }
         return birthValid;
     };
-}
-
-let birthArray = ['month', 'day', 'year'];
-for(let i = 0; i < birthArray.length; i++) {
-    document.getElementById(birthArray[i]).addEventListener("blur", isBirthValid(i));
 }
