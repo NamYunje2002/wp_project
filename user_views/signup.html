@@ -222,6 +222,16 @@
 </div>
 <script src="../user_services/signup_valid_chk.js"></script>
 <script>
+    let birthArray = ['month', 'day', 'year'];
+    for(let i = 0; i < birthArray.length; i++) {
+        document.getElementById(birthArray[i]).addEventListener("blur", isBirthValid(i));
+    }
+
+    let fieldArray = ['id', 'pw', 'name', 'email'];
+    for (let i = 0; i < fieldArray.length; i++) {
+        document.getElementById(fieldArray[i]).addEventListener("blur", isInputValid(i));
+    }
+
     let isIdDp = true;
     let dpChk = document.getElementById('dp_chk');
     dpChk.addEventListener('click', (e) => {
