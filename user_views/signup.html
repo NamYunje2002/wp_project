@@ -48,7 +48,6 @@
             border: 1px solid var(--main-color);
             border-radius: 5px;
             font-size: 20px;
-            color: var(--main-color);
         }
 
         input#submit_btn {
@@ -81,6 +80,10 @@
             font-weight: bold;
         }
 
+        input[type=button]:hover {
+            background-color: #e6e6e6;
+        }
+
         .left_container {
             text-align: left;
             width: 90%;
@@ -102,7 +105,6 @@
             background-color: #ffffff;
             border: 1px solid var(--main-color);
             border-radius: 5px;
-            color: var(--main-color);
         }
 
         input[type=radio] {
@@ -111,10 +113,6 @@
             border-radius: 50%;
             width: 1.25em;
             height: 1.25em;
-        }
-
-        label {
-            color: var(--main-color);
         }
 
         div.valid_chk {
@@ -137,8 +135,7 @@
             height: 30px;
             font-size: 15px;
             padding: 0;
-            margin: 0;
-            margin-bottom: 15px;
+            margin: 0 0 15px 0;
             background-color: var(--main-color);
             color: #ffffff;
         }

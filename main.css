@@ -1,0 +1,80 @@
+:root {
+    --main-color: #A79277;
+}
+
+* {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+body, html {
+    margin-left: 200px;
+    margin-right: 200px;
+    padding: 0;
+}
+
+header {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+img.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+div.home {
+    display: flex;
+    align-items: center;
+    font-size: 28px;
+    margin-right: 100px;
+    cursor: pointer;
+}
+
+.home > span {
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    float: left;
+    height: 100%;
+}
+
+div.nav-div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
+div.nav-div:hover {
+    font-weight: bold;
+    border-bottom: 5px solid var(--main-color);
+}
+
+.nav-div > span {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+img#profile {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
