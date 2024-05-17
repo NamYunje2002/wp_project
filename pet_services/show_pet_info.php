@@ -10,7 +10,7 @@ if (!isset($_SESSION['userid'])) {
 
 include "../db_conn.php";
 $userId = $_SESSION['userid'];
-$showPetsSql = "SELECT pet_name, pet_birth, pet_gender, pet_etc, pet_type, pet_type_detailed FROM pets_tb AS P, users_tb U WHERE P.pet_owner = U.user_id AND P.pet_owner = '$userId'";
+$showPetsSql = "SELECT pet_name, pet_birth, pet_gender, pet_dec, pet_type, pet_breed FROM pets_tb AS P, users_tb U WHERE P.pet_owner = U.user_id AND P.pet_owner = '$userId'";
 $rsl = mysqli_query($db, $showPetsSql);
 ?>
 
@@ -58,13 +58,13 @@ $rsl = mysqli_query($db, $showPetsSql);
             font-size: 24px;
         }
 
-        #add-container {
+        #add-pet-container {
             height: auto;
             padding: 100px 0;
             display: none;
         }
 
-        .pet-add-form {
+        #add-pet-form {
             display: flex;
             flex: 1;
         }
@@ -80,12 +80,12 @@ $rsl = mysqli_query($db, $showPetsSql);
             font-size: 20px;
         }
 
-        .left_container {
+        .left-container {
             text-align: left;
             width: 90%;
         }
 
-        div.left_container > span {
+        div.left-container > span {
             display: block;
             width: 100%;
             text-align: left;
@@ -94,6 +94,7 @@ $rsl = mysqli_query($db, $showPetsSql);
         }
 
         select {
+            flex: 1;
             width: 80px;
             height: 35px;
             margin: 10px;
@@ -111,7 +112,7 @@ $rsl = mysqli_query($db, $showPetsSql);
             height: 1.25em;
         }
 
-        div.valid_chk {
+        div.check-valid {
             width: 250px;
             height: 70px;
             color: #ff0000;
@@ -119,13 +120,26 @@ $rsl = mysqli_query($db, $showPetsSql);
             font-size: 15px;
         }
 
-        .photo-wrapper, .info-wrapper, .etc-wrapper {
+        textarea#pet-des {
+            width: 90%;
+            height: 260px;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            border: 1px solid var(--main-color);
+            border-radius: 5px;
+            font-size: 20px;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        .photo-wrapper, .info-wrapper, .dec-wrapper {
             flex: 1;
             align-items: center;
             justify-content: center;
             display: flex;
             flex-direction: column;
-            height: 100%; /* 각 wrapper의 높이를 100%로 설정합니다. */
+            height: 100%;
         }
 
         .photo-wrapper {
@@ -141,12 +155,26 @@ $rsl = mysqli_query($db, $showPetsSql);
             flex-direction: column;
         }
 
-        .etc-wrapper {
+        .dec-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            height: 100%;
+            width: 100%; /* Adjust as needed */
+            overflow: hidden; /* Hides any overflowing content */
         }
+
+        .dec {
+            width: 100%;
+            height: 260px; /* Fixed height */
+            overflow-y: auto; /* Adds a vertical scrollbar if content overflows */
+            overflow-x: hidden; /* Hides horizontal overflow */
+            padding: 10px; /* Adjust padding as needed */
+            box-sizing: border-box;
+            word-wrap: break-word; /* Enables word wrapping */
+        }
+
 
         .info {
             text-align: center;
@@ -187,69 +215,81 @@ $rsl = mysqli_query($db, $showPetsSql);
 </head>
 <body>
 <header>
-    <div class="header-left-container">
-        <div class="home" id="home" onclick="location.href = '/wp_project'">
+    <div class="header-home">
+        <div class="home-wrapper" id="home" onclick="location.href = '/wp_project'">
             <img class="logo" id="main_logo" src="../img/logo.png" alt="logo"/>
             <span>PET</span>
         </div>
         <nav>
-            <div id="mypets" class="nav-div" onclick="location.href='/wp_project/pet_services/pet_info.php'"><span>My Pets</span>
-            </div>
-            <div id="types" class="nav-div"><span>Types</span></div>
+            <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
+            <div class="home-nav"><span>Types</span></div>
         </nav>
     </div>
-    <img class="logo" id="profile" src="../img/profile.png" alt="profile"
-         onclick="location.href='/wp_project/user_services/profile.php'"/>
+    <img class="logo" src="../img/profile.png" alt="profile"
+         onclick="location.href='../user_services/show_user_info.php'"/>
 </header>
 <div class="container">
-    <div class="heading"><span>My Pets</span><input type="button" id="open-add-form-btn" value="Add my pet"/></div>
+    <div class="heading">
+        <span>My Pets</span><input type="button" id="open-add-form-btn" value="Add my pet"/>
+    </div>
     <div class="sub-heading" id="add-heading">Add my pet</div>
-    <div class="profile-container" id="add-container">
-        <form class="pet-add-form" action="./add_pet.php" method="post">
+    <div class="profile-container" id="add-pet-container">
+        <form id="add-pet-form" action="./add_pet.php" method="post">
             <div class="photo-wrapper"></div>
             <div class="info-wrapper">
-                <div class="left_container">
+                <div class="left-container">
+                    <span>Type</span>
+                </div>
+                <div class="select-wrapper">
+                    <select id="pet-type" name="pet_type">
+                        <option selected disabled>Type</option>
+                    </select>
+                    <select id="pet-breed" name="pet_breed">
+                        <option selected disabled>Breed</option>
+                    </select>
+                </div>
+                <div class="left-container">
                     <span>Name</span>
                 </div>
-                <input type="text" id="name" name="name"/>
-                <div class="left_container">
-                    <div class="valid_chk" id="name_valid">Enter your pet's name up to 20 characters.</div>
+                <input type="text" id="pet-name" name="pet_name"/>
+                <div class="left-container">
+                    <div class="check-valid" id="name_valid">Enter your pet's name up to 20 characters.</div>
                 </div>
-                <div class="left_container">
+                <div class="left-container">
                     <span>Birthday</span>
                 </div>
-                <div>
-                    <select id="month" name="month">
+                <div class="select-wrapper">
+                    <select id="pet-month" name="pet_month">
                         <option selected disabled>Month</option>
                     </select>
-                    <select id="year" name="year">
+                    <select id="pet-year" name="pet_year">
                         <option selected disabled>Year</option>
                     </select>
                 </div>
-                <div class="left_container">
-                    <div class="valid_chk" id="birth_valid">Select your pet's date of birth.</div>
+                <div class="left-container">
+                    <div class="check-valid">Select your pet's date of birth.</div>
                 </div>
 
-                <div class="left_container">
+                <div class="left-container">
                     <span>Gender</span>
                 </div>
-                <div class="left_container">
-                    <label for="male">Male</label><input type="radio" name="gender" value="m" id="male">
-                    <label for="female">Female</label><input type="radio" name="gender" value="f" id="female">
+                <div class="left-container">
+                    <label for="male">Male</label><input type="radio" name="pet_gender" value="m" id="male">
+                    <label for="female">Female</label><input type="radio" name="pet_gender" value="f" id="female">
                 </div>
-                <div class="left_container">
-                    <div class="valid_chk" id="gender_valid">Select your pet's gender.</div>
+                <div class="left-container">
+                    <div class="check-valid">Select your pet's gender.</div>
                 </div>
             </div>
-            <div class="etc-wrapper">
-                <div class="left_container">
+            <div class="dec-wrapper">
+                <div class="left-container">
                     <span>Description</span>
                 </div>
-                <input type="text" id="name" name="name"/>
+                <textarea id="pet-des" name="pet_des" rows="2"></textarea>
             </div>
             <div class="basic-info-btn-container">
                 <input type="button" id="cancel-btn" value="Cancel"/>
-                <input type="button" id="add-btn" value="Add"/>
+                <input type="button" id="add-pet-btn" value="Add"/>
             </div>
         </form>
     </div>
@@ -257,10 +297,10 @@ $rsl = mysqli_query($db, $showPetsSql);
     while ($row = mysqli_fetch_array($rsl)) {
         $petName = $row['pet_name'];
         $petType = $row['pet_type'];
-        $petTypeDetail = $row['pet_type_detailed'];
+        $petBreed = $row['pet_breed'];
         $petBirth = $row['pet_birth'];
         $petGender = ($row['pet_gender'] == 'm' ? 'Male' : 'Female');
-        $petEtc = $row['pet_etc'];
+        $petDec = $row['pet_dec'];
 
         $petBirthY = (int)(substr($petBirth, 2, 4));
         $petBirthM = (int)(substr($petBirth, 0, 2));
@@ -277,7 +317,9 @@ $rsl = mysqli_query($db, $showPetsSql);
             $petAgeM += (12 - ($petBirthM - $todayM));
         }
 
-        echo '<div class="sub-heading">' . $petType . '</div>';
+        echo '<div class="sub-heading">' . $petType;
+        if($petBreed != '') echo ' - ' . $petBreed;
+        echo '</div>';
         echo '<div class="profile-container">';
         echo '<div class="photo-wrapper">';
         echo '</div>';
@@ -286,8 +328,8 @@ $rsl = mysqli_query($db, $showPetsSql);
         echo '<div class="info">' . $petAge . ' years old (' . $petAgeM . ' months)</div>';
         echo '<div class="info">' . $petGender . '</div>';
         echo '</div>';
-        echo '<div class="etc-wrapper">';
-        echo '<div class="etc">' . $petEtc . '</div>';
+        echo '<div class="dec-wrapper">';
+        echo '<div class="dec">' . $petDec . '</div>';
         echo '</div>';
         echo '<div class="basic-info-btn-container">';
         echo '<input type="button" value="Modify" id="info-modify-btn"/>';
@@ -298,7 +340,7 @@ $rsl = mysqli_query($db, $showPetsSql);
 </div>
 <script src="../user_services/signup_valid_chk.js"></script>
 <script>
-    let addContainer = document.getElementById('add-container');
+    let addContainer = document.getElementById('add-pet-container');
     let addHeading = document.getElementById('add-heading');
     document.getElementById('open-add-form-btn').addEventListener('click', () => {
         addContainer.style.display = 'block';
@@ -310,8 +352,48 @@ $rsl = mysqli_query($db, $showPetsSql);
         addHeading.style.display = 'none';
     });
 
-    document.getElementById('add-btn').addEventListener('click', () => {
-        document.getElementById('pet-add-form').submit();
+    document.getElementById('add-pet-btn').addEventListener('click', () => {
+        document.getElementById('add-pet-form').submit();
     });
+
+    let monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let monthSelect = document.getElementById('pet-month');
+    for (let i = 0; i < monthArr.length; i++) {
+        monthSelect.appendChild(new Option(monthArr[i], (i + 1)));
+    }
+
+    let curYear = new Date().getFullYear();
+    let yearSelect = document.getElementById('pet-year');
+    for (let i = curYear; i >= curYear - 500; i--) {
+        yearSelect.appendChild(new Option(i, i));
+    }
+
+    let petOptions = [
+        {type: 'Dog', breeds: ['Puppy', 'Labrador Retriever', 'Golden Retriever']},
+        {type: 'Cat', breeds: ['Siamese', 'Persian', 'Maine Coon']},
+        {type: 'Bird', breeds: ['Parrot', 'Canary', 'Cockatiel']}
+    ];
+
+    let type = document.getElementById('pet-type');
+    petOptions.forEach((option) => {
+        type.appendChild(new Option(option.type, option.type))
+    });
+
+    function updateBreedOptions() {
+        let breed = document.getElementById('pet-breed');
+        breed.innerHTML = '';
+        let defaultOption = new Option('Breed', '', true, true);
+        defaultOption.disabled = true;
+        breed.appendChild(defaultOption);
+
+        let selectedBreeds = petOptions.find((option) => {
+            return option.type.toLowerCase() === type.value.toLowerCase();
+        }).breeds;
+        selectedBreeds.forEach((b) => {
+            breed.appendChild(new Option(b, b));
+        })
+    }
+
+    type.addEventListener('change', () => updateBreedOptions());
 </script>
 </html>
