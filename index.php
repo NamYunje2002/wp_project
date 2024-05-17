@@ -28,29 +28,21 @@ $username = $_SESSION['username'];
 </head>
 <body>
 <header>
-    <div class="left-container">
-        <div class="home" id="home">
+    <div class="header-home">
+        <div class="home-wrapper" id="home" onclick="location.href = '/wp_project'">
             <img class="logo" id="main_logo" src="./img/logo.png" alt="logo"/>
             <span>PET</span>
         </div>
         <nav>
-            <div class="nav-div"><span>asd</span></div>
-            <div class="nav-div"><span>asd</span></div>
+            <div class="home-nav" onclick="location.href='./pet_services/show_pet_info.php'"><span>My Pets</span></div>
+            <div class="home-nav"><span>Types</span></div>
         </nav>
     </div>
-    <img class="logo" id="profile" src="./img/profile.png" alt="profile"/>
+    <img class="logo" src="./img/profile.png" alt="profile" onclick="location.href='user_services/show_user_info.php'"/>
 </header>
 <div class="container">
-    <!-- Content goes here -->
 </div>
 <script>
-    document.getElementById('home').addEventListener('click', () => {
-        location.href = '/wp_project';
-    });
-
-    document.getElementById('profile').addEventListener('click', () => {
-        location.href = './user_services/profile.php';
-    });
 </script>
 </body>
 </html>

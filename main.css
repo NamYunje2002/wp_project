@@ -22,20 +22,20 @@ header {
     align-items: center;
 }
 
-.left-container {
+.header-home {
     display: flex;
     align-items: center;
     height: 100%;
 }
 
-img.logo {
+.logo {
     width: 40px;
     height: 40px;
     margin-right: 10px;
     cursor: pointer;
 }
 
-div.home {
+.home-wrapper {
     display: flex;
     align-items: center;
     font-size: 28px;
@@ -43,7 +43,7 @@ div.home {
     cursor: pointer;
 }
 
-.home > span {
+.home-wrapper > span {
     margin-left: 5px;
     font-weight: bold;
 }
@@ -54,7 +54,7 @@ nav {
     height: 100%;
 }
 
-div.nav-div {
+.home-nav {
     height: 100%;
     display: flex;
     align-items: center;
@@ -63,18 +63,12 @@ div.nav-div {
     cursor: pointer;
 }
 
-div.nav-div:hover {
+.home-nav:hover {
     font-weight: bold;
     border-bottom: 5px solid var(--main-color);
 }
 
-.nav-div > span {
+.home-nav > span {
     font-size: 24px;
     font-weight: bold;
-}
-
-img#profile {
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
 }
