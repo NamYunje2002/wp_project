@@ -39,7 +39,6 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
     <style>
         div.container {
-            height: 100%;
             padding: 20px 0;
         }
 
@@ -212,17 +211,17 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
 </head>
 <body>
 <header>
-    <div class="left-container">
-        <div class="home" id="home">
+    <div class="header-home">
+        <div class="home-wrapper" id="home" onclick="location.href = '/wp_project'">
             <img class="logo" id="main_logo" src="../img/logo.png" alt="logo"/>
             <span>PET</span>
         </div>
         <nav>
-            <div class="nav-div"><span>asd</span></div>
-            <div class="nav-div"><span>asd</span></div>
+            <div class="home-nav" onclick="location.href='../pet_services/show_pet_info.php'"><span>My Pets</span></div>
+            <div class="home-nav"><span>Types</span></div>
         </nav>
     </div>
-    <img class="logo" id="profile" src="../img/profile.png" alt="profile"/>
+    <img class="logo" src="../img/profile.png" alt="profile" onclick="location.href='show_user_info.php'"/>
 </header>
 <div class="container">
     <div class="heading">Profile</div>
@@ -238,7 +237,7 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             </div>
         </div>
         <div id="modify-div">
-            <form id="modify-form" action="./modify_info.php" method="post">
+            <form id="modify-form" action="modify_user_info.php" method="post">
                 <div class="left_container">
                     <span>Name</span>
                 </div>
@@ -307,7 +306,7 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
     });
 
     document.getElementById('profile').addEventListener('click', () => {
-        location.href = './profile.php';
+        location.href = 'show_user_profile.php';
     });
 
     let modifyDiv = document.getElementById('modify-div');
