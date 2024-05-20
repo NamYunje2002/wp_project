@@ -10,8 +10,9 @@ if (!isset($_SESSION['userid'])) {
 
 include "../db_conn.php";
 $userId = $_SESSION['userid'];
-$showPetsSql = "SELECT pet_name, pet_birth, pet_gender, pet_dec, pet_type, pet_breed FROM pets_tb AS P, users_tb U WHERE P.pet_owner = U.user_id AND P.pet_owner = '$userId'";
+$showPetsSql = "SELECT pet_name, pet_birth, pet_gender, pet_dec, pet_type, pet_breed, pet_img_name FROM pets_tb AS P, users_tb U WHERE P.pet_owner = U.user_id AND P.pet_owner = '$userId'";
 $rsl = mysqli_query($db, $showPetsSql);
+mysqli_close($db);
 ?>
 
 <html lang="en">
@@ -23,6 +24,8 @@ $rsl = mysqli_query($db, $showPetsSql);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <style>
         .container {
             padding: 20px 0;
@@ -67,6 +70,21 @@ $rsl = mysqli_query($db, $showPetsSql);
         #add-pet-form {
             display: flex;
             flex: 1;
+        }
+
+        input[type=file] {
+            display: none;
+        }
+
+        #preview-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #upload-wrapper, #pet-img-upload-btn  {
+            margin-top: 20px;
         }
 
         input[type=text] {
@@ -148,6 +166,15 @@ $rsl = mysqli_query($db, $showPetsSql);
             align-items: center;
         }
 
+        .pet-img {
+            border: 2px solid var(--main-color);
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 200px;
+            height: 200px;
+        }
+
         .info-wrapper {
             display: flex;
             justify-content: center;
@@ -161,20 +188,19 @@ $rsl = mysqli_query($db, $showPetsSql);
             align-items: center;
             flex-direction: column;
             height: 100%;
-            width: 100%; /* Adjust as needed */
-            overflow: hidden; /* Hides any overflowing content */
+            width: 100%;
+            overflow: hidden;
         }
 
         .dec {
             width: 100%;
-            height: 260px; /* Fixed height */
-            overflow-y: auto; /* Adds a vertical scrollbar if content overflows */
-            overflow-x: hidden; /* Hides horizontal overflow */
-            padding: 10px; /* Adjust padding as needed */
+            height: 260px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px;
             box-sizing: border-box;
-            word-wrap: break-word; /* Enables word wrapping */
+            word-wrap: break-word;
         }
-
 
         .info {
             text-align: center;
@@ -218,10 +244,11 @@ $rsl = mysqli_query($db, $showPetsSql);
     <div class="header-home">
         <div class="home-wrapper" id="home" onclick="location.href = '/wp_project'">
             <img class="logo" id="main_logo" src="../img/logo.png" alt="logo"/>
-            <span>PET</span>
+            <span>Along with the pet</span>
         </div>
         <nav>
-            <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
+            <div class="home-nav" onclick="location.href='../pet_services/show_pet_info.php'"><span>My Pets</span></div>
+            <div class="home-nav"><span>My Posts</span></div>
             <div class="home-nav"><span>Types</span></div>
         </nav>
     </div>
@@ -234,8 +261,17 @@ $rsl = mysqli_query($db, $showPetsSql);
     </div>
     <div class="sub-heading" id="add-heading">Add my pet</div>
     <div class="profile-container" id="add-pet-container">
-        <form id="add-pet-form" action="./add_pet.php" method="post">
-            <div class="photo-wrapper"></div>
+        <form id="add-pet-form" action="./add_pet.php" method="post" enctype="multipart/form-data">
+            <div class="photo-wrapper">
+                <div class="left-container">
+                    <span>Upload Pet Image</span>
+                </div>
+                <div class="pet-img" id="upload-wrapper">
+                    <input type="file" id="upload-pet-img" name="pet_img">
+                    <img id="preview-img" src="#" alt="preview">
+                </div>
+                <input type="button" value="Upload" id="pet-img-upload-btn"/>
+            </div>
             <div class="info-wrapper">
                 <div class="left-container">
                     <span>Type</span>
@@ -308,6 +344,8 @@ $rsl = mysqli_query($db, $showPetsSql);
         $todayM = (int)date("m");
         $petAge = $todayY - $petBirthY;
 
+        $petImgName = $row['pet_img_name'];
+
         $petAgeM = 0;
         if ($petBirthM <= $todayM) {
             $petAgeM += 12 * $petAge;
@@ -318,10 +356,15 @@ $rsl = mysqli_query($db, $showPetsSql);
         }
 
         echo '<div class="sub-heading">' . $petType;
-        if($petBreed != '') echo ' - ' . $petBreed;
+        if ($petBreed != '') echo ' - ' . $petBreed;
         echo '</div>';
         echo '<div class="profile-container">';
         echo '<div class="photo-wrapper">';
+        if($petImgName != '') {
+            echo '<img class="pet-img" src="./pet_img/' . $petImgName . '" alt="pet-image"/>';
+        } else {
+            echo '<img class="pet-img" src="../img/logo.png"  alt="pet-image"/>';
+        }
         echo '</div>';
         echo '<div class="info-wrapper">';
         echo '<div class="info">' . $petName . '</div>';
@@ -340,16 +383,55 @@ $rsl = mysqli_query($db, $showPetsSql);
 </div>
 <script src="../user_services/signup_valid_chk.js"></script>
 <script>
+    const petImgUploadBtn = document.getElementById('pet-img-upload-btn');
+    const petImgInput = document.getElementById('upload-pet-img');
+    const previewImage = document.getElementById('preview-img');
+    let cropper;
+
+    petImgUploadBtn.addEventListener('click', function() {
+        petImgInput.click();
+    });
+
+    petImgInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageUrl = event.target.result;
+                previewImage.src = imageUrl;
+                if (cropper) {
+                    cropper.destroy(); // 기존의 Cropper 인스턴스가 있으면 제거
+                }
+                cropper = new Cropper(previewImage, {
+                    aspectRatio: 1, // 자를 이미지의 가로세로 비율 (예: 1은 정사각형)
+                    viewMode: 2, // 이미지가 최대한 크게 표시됨
+                    background: false, // 배경을 투명하게 설정
+                    autoCropArea: 1, // 자동으로 이미지를 자르는 영역 설정 (예: 1은 이미지 전체)
+                });
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.src = '#';
+            if (cropper) {
+                cropper.destroy(); // 파일 선택이 취소되면 Cropper 인스턴스 제거
+            }
+        }
+    });
+
+
     let addContainer = document.getElementById('add-pet-container');
     let addHeading = document.getElementById('add-heading');
-    document.getElementById('open-add-form-btn').addEventListener('click', () => {
+    let openAddFormBtn = document.getElementById('open-add-form-btn');
+    openAddFormBtn.addEventListener('click', () => {
         addContainer.style.display = 'block';
         addHeading.style.display = 'block';
+        openAddFormBtn.style.visibility = 'hidden';
     });
 
     document.getElementById('cancel-btn').addEventListener('click', () => {
         addContainer.style.display = 'none';
         addHeading.style.display = 'none';
+        openAddFormBtn.style.visibility = '';
     });
 
     document.getElementById('add-pet-btn').addEventListener('click', () => {
