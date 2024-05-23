@@ -10,7 +10,7 @@ if (!isset($_SESSION['userid'])) {
 
 include "../db_conn.php";
 $userId = $_SESSION['userid'];
-$showPetsSql = "SELECT pet_name, pet_birth, pet_gender, pet_dec, pet_type, pet_breed, pet_img_name FROM pets_tb AS P, users_tb U WHERE P.pet_owner = U.user_id AND P.pet_owner = '$userId'";
+$showPetsSql = "SELECT pet_id, pet_name, pet_birth, pet_gender, pet_desc, pet_type, pet_breed, pet_img_name FROM pets_tb AS P, users_tb U WHERE P.pet_owner = U.user_id AND P.pet_owner = '$userId'";
 $rsl = mysqli_query($db, $showPetsSql);
 mysqli_close($db);
 ?>
@@ -24,7 +24,6 @@ mysqli_close($db);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <style>
         .container {
@@ -61,13 +60,13 @@ mysqli_close($db);
             font-size: 24px;
         }
 
-        #add-pet-container {
+        #add-container {
             height: auto;
             padding: 100px 0;
             display: none;
         }
 
-        #add-pet-form {
+        form {
             display: flex;
             flex: 1;
         }
@@ -83,7 +82,7 @@ mysqli_close($db);
             transform: translate(-50%, -50%);
         }
 
-        #upload-wrapper, #pet-img-upload-btn  {
+        #upload-wrapper, #img-upload-btn  {
             margin-top: 20px;
         }
 
@@ -109,6 +108,10 @@ mysqli_close($db);
             text-align: left;
             font-size: 15px;
             font-weight: bold;
+        }
+
+        .select-wrapper {
+
         }
 
         select {
@@ -138,7 +141,7 @@ mysqli_close($db);
             font-size: 15px;
         }
 
-        textarea#pet-des {
+        textarea.pet-desc {
             width: 90%;
             height: 260px;
             margin: 10px;
@@ -151,7 +154,7 @@ mysqli_close($db);
             resize: none;
         }
 
-        .photo-wrapper, .info-wrapper, .dec-wrapper {
+        .photo-wrapper, .info-wrapper, .desc-wrapper {
             flex: 1;
             align-items: center;
             justify-content: center;
@@ -182,7 +185,7 @@ mysqli_close($db);
             flex-direction: column;
         }
 
-        .dec-wrapper {
+        .desc-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -192,9 +195,9 @@ mysqli_close($db);
             overflow: hidden;
         }
 
-        .dec {
+        .desc {
             width: 100%;
-            height: 260px;
+            height: 200px;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 10px;
@@ -221,14 +224,23 @@ mysqli_close($db);
             background-color: #8B715F;
         }
 
-        input[type=button]#cancel-btn {
+        input[type=button].cancel-btn {
             background-color: #ffffff;
             border: 1px solid var(--main-color);
             color: var(--main-color);
         }
 
-        input[type=button]#cancel-btn:hover {
+        input[type=button].cancel-btn:hover {
             background-color: #e6e6e6;
+        }
+
+        input[type=button]#delete-btn {
+            background-color: #CD5C5C;
+            margin-right: auto;
+        }
+
+        input[type=button]#delete-btn:hover {
+            background-color: #B22222;
         }
 
         .basic-info-btn-container {
@@ -237,6 +249,37 @@ mysqli_close($db);
             right: 20px;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: auto;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 60%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+
+        #modal-wrapper {
+            height: 400px;
+            padding: 100px 0;
+        }
+
+        #modal-heading {
+            padding: 0;
+            margin: 10px;
+        }
     </style>
 </head>
 <body>
@@ -257,11 +300,11 @@ mysqli_close($db);
 </header>
 <div class="container">
     <div class="heading">
-        <span>My Pets</span><input type="button" id="open-add-form-btn" value="Add my pet"/>
+        <span>My Pets</span><input type="button" id="add-form-btn" value="Add my pet"/>
     </div>
     <div class="sub-heading" id="add-heading">Add my pet</div>
-    <div class="profile-container" id="add-pet-container">
-        <form id="add-pet-form" action="./add_pet.php" method="post" enctype="multipart/form-data">
+    <div class="profile-container" id="add-container">
+        <form id="add-form" action="./add_pet.php" method="post" enctype="multipart/form-data">
             <div class="photo-wrapper">
                 <div class="left-container">
                     <span>Upload Pet Image</span>
@@ -270,73 +313,154 @@ mysqli_close($db);
                     <input type="file" id="upload-pet-img" name="pet_img">
                     <img id="preview-img" src="#" alt="preview">
                 </div>
-                <input type="button" value="Upload" id="pet-img-upload-btn"/>
+                <input type="button" value="Upload" id="img-upload-btn"/>
             </div>
             <div class="info-wrapper">
                 <div class="left-container">
                     <span>Type</span>
                 </div>
                 <div class="select-wrapper">
-                    <select id="pet-type" name="pet_type">
+                    <select class="pet-type" id="add-pet-type" name="pet_type">
                         <option selected disabled>Type</option>
                     </select>
-                    <select id="pet-breed" name="pet_breed">
+                    <select class="pet-breed" id="add-pet-breed" name="pet_breed">
                         <option selected disabled>Breed</option>
                     </select>
                 </div>
                 <div class="left-container">
+                    <div class="check-valid" id="add-pet-type-valid">Enter your pet's name up to 20 characters.</div>
+                </div>
+                <div class="left-container">
                     <span>Name</span>
                 </div>
-                <input type="text" id="pet-name" name="pet_name"/>
+                <input type="text" class="pet-name" id="add-pet-name" name="pet_name"/>
                 <div class="left-container">
-                    <div class="check-valid" id="name_valid">Enter your pet's name up to 20 characters.</div>
+                    <div class="check-valid" id="add-pet-name-valid">Enter your pet's name up to 20 characters.</div>
                 </div>
                 <div class="left-container">
-                    <span>Birthday</span>
+                    <span>Birthday or Age</span>
                 </div>
                 <div class="select-wrapper">
-                    <select id="pet-month" name="pet_month">
+                    <select class="pet-month" id="add-pet-month" name="pet_month">
                         <option selected disabled>Month</option>
                     </select>
-                    <select id="pet-year" name="pet_year">
+                    <select class="pet-year" id="add-pet-year" name="pet_year">
                         <option selected disabled>Year</option>
                     </select>
                 </div>
                 <div class="left-container">
-                    <div class="check-valid">Select your pet's date of birth.</div>
+                    <div class="check-valid" id="add-pet-birth-valid">Select your pet's date of birth.</div>
                 </div>
 
                 <div class="left-container">
                     <span>Gender</span>
                 </div>
                 <div class="left-container">
-                    <label for="male">Male</label><input type="radio" name="pet_gender" value="m" id="male">
-                    <label for="female">Female</label><input type="radio" name="pet_gender" value="f" id="female">
+                    <label for="male">Male</label><input type="radio" name="pet_gender" value="m">
+                    <label for="female">Female</label><input type="radio" name="pet_gender" value="f">
                 </div>
                 <div class="left-container">
                     <div class="check-valid">Select your pet's gender.</div>
                 </div>
             </div>
-            <div class="dec-wrapper">
+            <div class="desc-wrapper">
                 <div class="left-container">
                     <span>Description</span>
                 </div>
-                <textarea id="pet-des" name="pet_des" rows="2"></textarea>
+                <textarea class="pet-desc" name="pet_desc" rows="2"></textarea>
             </div>
             <div class="basic-info-btn-container">
-                <input type="button" id="cancel-btn" value="Cancel"/>
-                <input type="button" id="add-pet-btn" value="Add"/>
+                <input type="button" class="cancel-btn" id="add-cancel-btn" value="Cancel"/>
+                <input type="button" id="add-btn" value="Add"/>
             </div>
         </form>
     </div>
+    <div class="modal" id="modify-modal" >
+        <div class="modal-content">
+            <div class="sub-heading" id="modal-heading">Modify</div>
+            <div class="profile-container" id="modal-wrapper">
+            <form id="modify-form" action="./modify_pet.php" method="post">
+                <div class="photo-wrapper">
+                    <div class="left-container">
+                        <span>Upload Pet Image</span>
+                    </div>
+                    <div class="pet-img" id="upload-wrapper">
+                        <input type="file" id="upload-pet-img" name="pet_img">
+                        <img id="preview-img" src="#" alt="preview">
+                    </div>
+                    <input type="button" value="Upload" id="img-upload-btn"/>
+                </div>
+                <div class="info-wrapper">
+                    <div class="left-container">
+                        <span>Type</span>
+                    </div>
+                    <div class="select-wrapper">
+                        <select class="pet-type" id="modify-pet-type" name="pet_type">
+                            <option selected disabled>Type</option>
+                        </select>
+                        <select class="pet-breed" id="modify-pet-breed" name="pet_breed">
+                            <option selected disabled>Breed</option>
+                        </select>
+                    </div>
+                    <div class="left-container">
+                        <span>Name</span>
+                    </div>
+                    <input type="text" class="pet-name" id="modify-pet-name" name="pet_name"/>
+                    <div class="left-container">
+                        <div class="check-valid" id="name_valid">Enter your pet's name up to 20 characters.</div>
+                    </div>
+                    <div class="left-container">
+                        <span>Birthday</span>
+                    </div>
+                    <div class="select-wrapper">
+                        <select class="pet-month" id="modify-pet-month" name="pet_month">
+                            <option selected disabled>Month</option>
+                        </select>
+                        <select class="pet-year" id="modify-pet-year" name="pet_year">
+                            <option selected disabled>Year</option>
+                        </select>
+                    </div>
+                    <div class="left-container">
+                        <div class="check-valid">Select your pet's date of birth.</div>
+                    </div>
+
+                    <div class="left-container">
+                        <span>Gender</span>
+                    </div>
+                    <div class="left-container">
+                        <label for="male">Male</label><input type="radio" name="pet_gender" value="m" id="modify-pet-male">
+                        <label for="female">Female</label><input type="radio" name="pet_gender" value="f" id="modify-pet-female">
+                    </div>
+                    <div class="left-container">
+                        <div class="check-valid">Select your pet's gender.</div>
+                    </div>
+                </div>
+                <div class="desc-wrapper">
+                    <div class="left-container">
+                        <span>Description</span>
+                    </div>
+                    <textarea class="pet-desc" id="modify-pet-desc" name="pet_desc" rows="2"></textarea>
+                </div>
+                <div class="basic-info-btn-container">
+                    <input type="button" id="delete-btn" value="Delete"/>
+                    <input type="button" class="cancel-btn" id="modify-cancel-btn" value="Cancel"/>
+                    <input type="button" id="modify-modify-btn" value="Modify"/>
+                </div>
+                <input type="hidden" id="pet-id" name="pet_id" value="">
+            </form>
+            </div>
+        </div>
+    </div>
     <?php
     while ($row = mysqli_fetch_array($rsl)) {
+        $petId = $row['pet_id'];
+
         $petName = $row['pet_name'];
         $petType = $row['pet_type'];
         $petBreed = $row['pet_breed'];
         $petBirth = $row['pet_birth'];
         $petGender = ($row['pet_gender'] == 'm' ? 'Male' : 'Female');
-        $petDec = $row['pet_dec'];
+        $petDesc = $row['pet_desc'];
 
         $petBirthY = (int)(substr($petBirth, 2, 4));
         $petBirthM = (int)(substr($petBirth, 0, 2));
@@ -355,10 +479,10 @@ mysqli_close($db);
             $petAgeM += (12 - ($petBirthM - $todayM));
         }
 
-        echo '<div class="sub-heading">' . $petType;
+        echo '<div class="sub-heading" id="sub-heading-'.$petId.'">' . $petType;
         if ($petBreed != '') echo ' - ' . $petBreed;
         echo '</div>';
-        echo '<div class="profile-container">';
+        echo '<div class="profile-container" id="pet-id-' . $petId . '">';
         echo '<div class="photo-wrapper">';
         if($petImgName != '') {
             echo '<img class="pet-img" src="./pet_img/' . $petImgName . '" alt="pet-image"/>';
@@ -368,27 +492,29 @@ mysqli_close($db);
         echo '</div>';
         echo '<div class="info-wrapper">';
         echo '<div class="info">' . $petName . '</div>';
-        echo '<div class="info">' . $petAge . ' years old (' . $petAgeM . ' months)</div>';
+        echo '<div class="info">' . (substr($petBirth, 0, 2)) . ' / ' . $petBirthY . '</div>';
+        echo '<div class="info" birth="'.$petBirth.'">' . $petAge . ' years old (' . $petAgeM . ' months)</div>';
         echo '<div class="info">' . $petGender . '</div>';
         echo '</div>';
-        echo '<div class="dec-wrapper">';
-        echo '<div class="dec">' . $petDec . '</div>';
+        echo '<div class="desc-wrapper">';
+        echo '<div class="desc">' . $petDesc . '</div>';
         echo '</div>';
         echo '<div class="basic-info-btn-container">';
-        echo '<input type="button" value="Modify" id="info-modify-btn"/>';
+        echo '<input pet-id=' . $petId . ' type="button" value="Modify" class="modify-btn"/>';
         echo '</div>';
         echo '</div>';
     }
     ?>
 </div>
 <script src="../user_services/signup_valid_chk.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
-    const petImgUploadBtn = document.getElementById('pet-img-upload-btn');
+    const imgUploadBtn = document.getElementById('img-upload-btn');
     const petImgInput = document.getElementById('upload-pet-img');
     const previewImage = document.getElementById('preview-img');
     let cropper;
 
-    petImgUploadBtn.addEventListener('click', function() {
+    imgUploadBtn.addEventListener('click', function() {
         petImgInput.click();
     });
 
@@ -400,54 +526,108 @@ mysqli_close($db);
                 const imageUrl = event.target.result;
                 previewImage.src = imageUrl;
                 if (cropper) {
-                    cropper.destroy(); // 기존의 Cropper 인스턴스가 있으면 제거
+                    cropper.desctroy();
                 }
                 cropper = new Cropper(previewImage, {
-                    aspectRatio: 1, // 자를 이미지의 가로세로 비율 (예: 1은 정사각형)
-                    viewMode: 2, // 이미지가 최대한 크게 표시됨
-                    background: false, // 배경을 투명하게 설정
-                    autoCropArea: 1, // 자동으로 이미지를 자르는 영역 설정 (예: 1은 이미지 전체)
+                    aspectRatio: 1,
+                    viewMode: 2,
+                    background: false,
+                    autoCropArea: 1,
                 });
             };
             reader.readAsDataURL(file);
         } else {
             previewImage.src = '#';
             if (cropper) {
-                cropper.destroy(); // 파일 선택이 취소되면 Cropper 인스턴스 제거
+                cropper.desctroy();
             }
         }
     });
 
+    document.getElementById('add-btn').addEventListener('click', () => {
+        let addForm = document.getElementById('add-form');
+        addForm.submit();
+    });
 
-    let addContainer = document.getElementById('add-pet-container');
+    let addContainer = document.getElementById('add-container');
     let addHeading = document.getElementById('add-heading');
-    let openAddFormBtn = document.getElementById('open-add-form-btn');
+    let openAddFormBtn = document.getElementById('add-form-btn');
     openAddFormBtn.addEventListener('click', () => {
         addContainer.style.display = 'block';
         addHeading.style.display = 'block';
         openAddFormBtn.style.visibility = 'hidden';
     });
 
-    document.getElementById('cancel-btn').addEventListener('click', () => {
+    document.getElementById('add-cancel-btn').addEventListener('click', () => {
         addContainer.style.display = 'none';
         addHeading.style.display = 'none';
         openAddFormBtn.style.visibility = '';
     });
 
-    document.getElementById('add-pet-btn').addEventListener('click', () => {
-        document.getElementById('add-pet-form').submit();
+    document.querySelectorAll('.modify-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+            let petId = button.getAttribute('pet-id');
+            document.querySelector('#pet-id').value = petId;
+
+            let profileContainer = document.getElementById('pet-id-' + petId);
+
+            let petTypeBreed = document.getElementById('sub-heading-'+petId).textContent.split(' - ');
+            let petName = profileContainer.querySelector('.info:nth-child(1)').textContent;
+            let petAge = profileContainer.querySelector('.info:nth-child(2)').textContent.split(' / ');
+            let petGender = profileContainer.querySelector('.info:nth-child(4)').textContent;
+            let petDesc = profileContainer.querySelector('.desc').textContent;
+
+            document.getElementById('modify-pet-type').value = petTypeBreed[0];
+            updateBreedOptions(1);
+            if(petTypeBreed.length > 1) document.getElementById('modify-pet-breed').value = petTypeBreed[1];
+            document.getElementById('modify-pet-name').value = petName;
+            document.getElementById('modify-pet-month').value = parseInt(petAge[0]);
+            document.getElementById('modify-pet-year').value = petAge[1];
+            document.getElementById('modify-pet-' + petGender.toLowerCase()).checked = true;
+            document.getElementById('modify-pet-desc').value = petDesc;
+            document.getElementById('modify-modal').style.display = 'block';
+        });
+    });
+
+    document.getElementById('modify-cancel-btn').addEventListener('click', () => {
+        document.getElementById('modify-modal').style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === document.getElementById('modify-modal')) {
+            document.getElementById('modify-modal').style.display = 'none';
+        }
+    });
+
+    let modifyForm = document.getElementById('modify-form');
+    document.getElementById('modify-modify-btn').addEventListener('click', () => {
+        modifyForm.submit();
+    });
+
+    document.getElementById('delete-btn').addEventListener('click', () => {
+        if(confirm('Are you sure you want to delete your pet?')) {
+            modifyForm.action = './delete_pet.php';
+            modifyForm.submit();
+        }
     });
 
     let monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    let monthSelect = document.getElementById('pet-month');
-    for (let i = 0; i < monthArr.length; i++) {
-        monthSelect.appendChild(new Option(monthArr[i], (i + 1)));
+    function setMonth(k) {
+        let monthSelect = document.querySelectorAll('.pet-month')[k];
+        for (let i = 0; i < monthArr.length; i++) {
+            monthSelect.appendChild(new Option(monthArr[i], (i + 1)));
+        }
     }
-
-    let curYear = new Date().getFullYear();
-    let yearSelect = document.getElementById('pet-year');
-    for (let i = curYear; i >= curYear - 500; i--) {
-        yearSelect.appendChild(new Option(i, i));
+    function setYear(k) {
+        let curYear = new Date().getFullYear();
+        let yearSelect = document.querySelectorAll('.pet-year')[k];
+        for (let i = curYear; i >= curYear - 500; i--) {
+            yearSelect.appendChild(new Option(i, i));
+        }
+    }
+    for(let i = 0; i < 2; i++) {
+        setMonth(i);
+        setYear(i);
     }
 
     let petOptions = [
@@ -456,26 +636,34 @@ mysqli_close($db);
         {type: 'Bird', breeds: ['Parrot', 'Canary', 'Cockatiel']}
     ];
 
-    let type = document.getElementById('pet-type');
-    petOptions.forEach((option) => {
-        type.appendChild(new Option(option.type, option.type))
-    });
+    let type = document.querySelectorAll('.pet-type');
 
-    function updateBreedOptions() {
-        let breed = document.getElementById('pet-breed');
+    function initTypeOptions() {
+        petOptions.forEach((option) => {
+            for(let i = 0; i < 2; i++) {
+                type[i].appendChild(new Option(option.type, option.type))
+            }
+        });
+    }
+
+    function updateBreedOptions(k) {
+        let breed = document.querySelectorAll('.pet-breed')[k];
         breed.innerHTML = '';
         let defaultOption = new Option('Breed', '', true, true);
         defaultOption.disabled = true;
         breed.appendChild(defaultOption);
 
         let selectedBreeds = petOptions.find((option) => {
-            return option.type.toLowerCase() === type.value.toLowerCase();
+            return option.type.toLowerCase() === type[k].value.toLowerCase();
         }).breeds;
         selectedBreeds.forEach((b) => {
             breed.appendChild(new Option(b, b));
         })
     }
 
-    type.addEventListener('change', () => updateBreedOptions());
+    initTypeOptions();
+    for(let i = 0; i < 2; i++) {
+        type[i].addEventListener('blur', () => updateBreedOptions(i));
+    }
 </script>
 </html>
