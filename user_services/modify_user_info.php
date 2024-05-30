@@ -23,6 +23,6 @@ if(!empty($_SESSION['userid']) && !empty($_POST['name']) && !empty($_POST['email
 }else{
     echo "<script>alert('Invalid value!')</script>";
 }
-echo "<script>location.href='show_user_info.php'</script>";
+echo '<script>location.href="/wp_project/views/show_user_info.php"</script>';
 exit();
 ?>

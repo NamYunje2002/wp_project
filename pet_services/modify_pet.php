@@ -76,5 +76,5 @@ mysqli_close($db);
 if ($isUpload) echo "<script>alert('Successful add pet')</script>";
 else echo "<script>alert('Failed to upload image')</script>";
 
-echo "<script>location.href='./show_pet_info.php'</script>";
+echo '<script>location.href="/wp_project/views/show_pet_info.php"</script>';
 ?>

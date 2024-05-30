@@ -4,5 +4,5 @@ session_destroy();
 ?>
 <script>
     alert("Log out");
-    location.replace('../index.php');
+    location.replace('/wp_project');
 </script>

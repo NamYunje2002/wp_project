@@ -19,7 +19,7 @@ if(!empty($_POST['id']) && !empty($_POST['pw']) ) {
         session_destroy();
     }
     mysqli_close($db);
-    echo "<script>location.href='../index.php'</script>";
+    echo "<script>location.href='/wp_project'</script>";
     exit;
 }else{
     echo "<script>alert('Invalid value!')</script>";
