@@ -27,7 +27,10 @@ mysqli_close($db);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <style>
         .container {
-            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 50px;
+            height: auto;
         }
 
         .heading {
@@ -55,6 +58,8 @@ mysqli_close($db);
             display: flex;
             height: 350px;
             position: relative;
+            width: 800px;
+            padding: 20px;
             border: 1px solid var(--main-color);
             border-radius: 20px;
             font-size: 24px;
@@ -110,10 +115,6 @@ mysqli_close($db);
             font-weight: bold;
         }
 
-        .select-wrapper {
-
-        }
-
         select {
             flex: 1;
             width: 80px;
@@ -161,6 +162,10 @@ mysqli_close($db);
             display: flex;
             flex-direction: column;
             height: 100%;
+        }
+
+        .desc-wrapper, .desc {
+            width: auto;
         }
 
         .photo-wrapper {
@@ -280,23 +285,47 @@ mysqli_close($db);
             padding: 0;
             margin: 10px;
         }
+
+        @media screen and (max-width: 1000px) {
+            .profile-container {
+                flex-direction: column;
+                width: 100%;
+                height: auto;
+            }
+
+            .photo-wrapper, .info-wrapper, .desc-wrapper {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .basic-info-btn-container {
+                position: static;
+                margin-top: 20px;
+            }
+
+            .desc-wrapper, .desc {
+                height: auto;
+            }
+        }
     </style>
 </head>
 <body>
 <header>
     <div class="header-home">
-        <div class="home-wrapper" id="home" onclick="location.href = '/wp_project'">
-            <img class="logo" id="main_logo" src="../img/logo.png" alt="logo"/>
+        <div class="home-wrapper" onclick="location.href = '/wp_project'">
+            <img class="logo" id="main-icon" src="../img/logo.png" alt="logo"/>
             <span>Along with the pet</span>
         </div>
-        <nav>
-            <div class="home-nav" onclick="location.href='../pet_services/show_pet_info.php'"><span>My Pets</span></div>
+        <nav id="nav-links">
+            <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
             <div class="home-nav"><span>My Posts</span></div>
             <div class="home-nav"><span>Types</span></div>
         </nav>
     </div>
-    <img class="logo" src="../img/profile.png" alt="profile"
-         onclick="location.href='../user_services/show_user_info.php'"/>
+    <div class="header-icons">
+        <img class="logo" id="profile-icon" src="../img/profile.png" alt="profile" onclick="location.href='./show_user_info.php'"/>
+        <img class="logo" id="menu-icon" src="../img/menu.png" alt="menu" onclick="toggleMenu()"/>
+    </div>
 </header>
 <div class="container">
     <div class="heading">
@@ -304,7 +333,7 @@ mysqli_close($db);
     </div>
     <div class="sub-heading" id="add-heading">Add my pet</div>
     <div class="profile-container" id="add-container">
-        <form id="add-form" action="./add_pet.php" method="post" enctype="multipart/form-data">
+        <form id="add-form" action="../pet_services/add_pet.php" method="post" enctype="multipart/form-data">
             <div class="photo-wrapper">
                 <div class="left-container">
                     <span>Upload Pet Image</span>
@@ -379,7 +408,7 @@ mysqli_close($db);
         <div class="modal-content">
             <div class="sub-heading" id="modal-heading">Modify</div>
             <div class="profile-container" id="modal-wrapper">
-            <form id="modify-form" action="./modify_pet.php" method="post">
+            <form id="modify-form" action="../pet_services/modify_pet.php" method="post">
                 <div class="photo-wrapper">
                     <div class="left-container">
                         <span>Upload Pet Image</span>
@@ -485,7 +514,7 @@ mysqli_close($db);
         echo '<div class="profile-container" id="pet-id-' . $petId . '">';
         echo '<div class="photo-wrapper">';
         if($petImgName != '') {
-            echo '<img class="pet-img" src="./pet_img/' . $petImgName . '" alt="pet-image"/>';
+            echo '<img class="pet-img" src="../pet_services/pet_img/' . $petImgName . '" alt="pet-image"/>';
         } else {
             echo '<img class="pet-img" src="../img/logo.png"  alt="pet-image"/>';
         }
@@ -496,9 +525,11 @@ mysqli_close($db);
         echo '<div class="info" birth="'.$petBirth.'">' . $petAge . ' years old (' . $petAgeM . ' months)</div>';
         echo '<div class="info">' . $petGender . '</div>';
         echo '</div>';
-        echo '<div class="desc-wrapper">';
-        echo '<div class="desc">' . $petDesc . '</div>';
-        echo '</div>';
+
+            echo '<div class="desc-wrapper">';
+            echo '<div class="desc">' . $petDesc . '</div>';
+            echo '</div>';
+
         echo '<div class="basic-info-btn-container">';
         echo '<input pet-id=' . $petId . ' type="button" value="Modify" class="modify-btn"/>';
         echo '</div>';
@@ -506,6 +537,7 @@ mysqli_close($db);
     }
     ?>
 </div>
+<script src="../toggle.js"></script>
 <script src="../user_services/signup_valid_chk.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
@@ -606,7 +638,7 @@ mysqli_close($db);
 
     document.getElementById('delete-btn').addEventListener('click', () => {
         if(confirm('Are you sure you want to delete your pet?')) {
-            modifyForm.action = './delete_pet.php';
+            modifyForm.action = '../pet_service/delete_pet.php';
             modifyForm.submit();
         }
     });

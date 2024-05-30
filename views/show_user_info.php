@@ -39,12 +39,14 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
     <style>
         div.container {
-            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 50px;
+            height: auto;
         }
 
         div.heading {
             font-size: 34px;
-            margin: 40px 0;
             font-weight: bold;
         }
 
@@ -74,10 +76,6 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             margin: 20px 0;
         }
 
-        div#profile-pw-div {
-            justify-content: space-between;
-        }
-
         div#info-name {
             font-size: 28px;
         }
@@ -93,13 +91,17 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             cursor: pointer;
         }
 
-        input[type=button]#info-modify-btn, #info-confirm-btn {
+        input[type=button] {
             background-color: var(--main-color);
             color: white;
             border: none;
         }
 
-        input[type=button]#info-cancel-btn {
+        input[type=button]:hover {
+            background-color: #8B715F;
+        }
+
+        input[type=button].negative-btn {
             background-color: #ffffff;
             border: 1px solid var(--main-color);
             color: var(--main-color);
@@ -109,28 +111,26 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             background-color: #e6e6e6;
         }
 
-        input[type=button]#pw-change-btn {
-            background-color: #ffffff;
-            border: 1px solid #717171;
+        input[type=button]#user-delete-btn {
+            background-color: #CD5C5C;
         }
 
-        input[type=button]#pw-change-btn {
-            background-color: #ffffff;
-            border: 1px solid #717171;
-        }
-
-        input[type=button]#info-modify-btn:hover, #info-confirm-btn:hover {
-            background-color: #8B715F;
+        input[type=button]#user-delete-btn:hover {
+            background-color: #B22222;
         }
 
         form {
             display: flex;
             flex-direction: column;
+            flex: 1;
+        }
+
+        #modify-form {
             align-items: center;
             margin: 20px;
         }
 
-        input[type=text] {
+        input[type=text], input[type=password] {
             width: 90%;
             height: 35px;
             margin: 10px;
@@ -146,12 +146,12 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             color: var(--main-color);
         }
 
-        .left_container {
+        .left-container {
             text-align: left;
             width: 90%;
         }
 
-        div.left_container > span {
+        div.left-container > span {
             display: block;
             width: 100%;
             text-align: left;
@@ -200,28 +200,68 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             right: 20px;
         }
 
-        .password-info {
-            margin-left: 50px;
+        .btn-container {
+            margin: 20px 50px;
+            justify-content: space-between;
         }
 
-        .password-btn-container {
-            margin-right: 50px;
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            position:relative;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 60%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+
+        #modal-wrapper {
+            height: 400px;
+            padding: 100px 0;
+        }
+
+        #modal-heading {
+            padding: 0;
+            margin: 10px;
+        }
+        
+        @media (max-width: 1000px) {
+            #sensitive-info-wrapper {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
 <header>
     <div class="header-home">
-        <div class="home-wrapper" id="home" onclick="location.href = '/wp_project'">
-            <img class="logo" id="main_logo" src="../img/logo.png" alt="logo"/>
-            <span>PET</span>
+        <div class="home-wrapper" onclick="location.href = '/wp_project'">
+            <img class="logo" id="main-icon" src="../img/logo.png" alt="logo"/>
+            <span>Along with the pet</span>
         </div>
-        <nav>
-            <div class="home-nav" onclick="location.href='../pet_services/show_pet_info.php'"><span>My Pets</span></div>
+        <nav id="nav-links">
+            <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
+            <div class="home-nav"><span>My Posts</span></div>
             <div class="home-nav"><span>Types</span></div>
         </nav>
     </div>
-    <img class="logo" src="../img/profile.png" alt="profile" onclick="location.href='show_user_info.php'"/>
+    <div class="header-icons">
+        <img class="logo" id="profile-icon" src="../img/profile.png" alt="profile" onclick="location.href='./show_user_info.php'"/>
+        <img class="logo" id="menu-icon" src="../img/menu.png" alt="menu" onclick="toggleMenu()"/>
+    </div>
 </header>
 <div class="container">
     <div class="heading">Profile</div>
@@ -237,24 +277,24 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             </div>
         </div>
         <div id="modify-div">
-            <form id="modify-form" action="modify_user_info.php" method="post">
-                <div class="left_container">
+            <form id="modify-form" action="../user_services/modify_user_info.php" method="post">
+                <div class="left-container">
                     <span>Name</span>
                 </div>
                 <input type="text" id="name" name="name" value="<?php echo $userName ?>"/>
-                <div class="left_container">
+                <div class="left-container">
                     <div class="valid_chk" id="name_valid">Enter a combination of 2 to 14 numbers and characters.</div>
                 </div>
 
-                <div class="left_container">
+                <div class="left-container">
                     <span>Email</span>
                 </div>
                 <input type="text" id="email" name="email" value="<?php echo $userEmail ?>" />
-                <div class="left_container">
+                <div class="left-container">
                     <div class="valid_chk" id="email_valid">Enter a valid email.</div>
                 </div>
 
-                <div class="left_container">
+                <div class="left-container">
                     <span>Birthday</span>
                 </div>
                 <div>
@@ -262,34 +302,64 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
                     <select data-user-day="<?php echo $userDay; ?>" id="day" name="day"><option selected disabled>Day</option></select>
                     <select data-user-year="<?php echo $userYear; ?>" id="year" name="year"><option selected disabled>Year</option></select>
                 </div>
-                <div class="left_container">
+                <div class="left-container">
                     <div class="valid_chk" id="birth_valid">Select your date of birth.</div>
                 </div>
 
-                <div class="left_container">
+                <div class="left-container">
                     <span>Gender</span>
                 </div>
-                <div class="left_container">
+                <div class="left-container">
                     <label for="male">Male</label><input type="radio" name="gender" value="m" id="male" <?php if($userGender == "Male") echo 'checked'; ?> >
                     <label for="female">Female</label><input type="radio" name="gender" value="f" id="female" <?php if($userGender == "Female") echo 'checked'; ?> >
                 </div>
-                <div class="left_container">
+                <div class="left-container">
                     <div class="valid_chk" id="gender_valid">Select your gender.</div>
                 </div>
                 <div class="basic-info-btn-container">
-                    <input type="button" id="info-cancel-btn" value="Cancel"/>
-                    <input type="button" id="info-confirm-btn" value="Confirm"/>
+                    <input type="button" class="negative-btn" id="info-cancel-btn" value="Cancel"/>
+                    <input type="button" class="positive-btn" id="info-confirm-btn" value="Confirm"/>
                 </div>
             </form>
         </div>
     </div>
-    <div class="sub-heading">Password</div>
-    <div class="profile" id="profile-pw-div">
-        <div class="password-info">password</div>
-        <div class="password-btn-container"><input type="button" value="Change password" id="pw-change-btn" /></div>
+    <div class="modal" id="modify-modal" >
+        <div class="modal-content">
+            <div class="sub-heading" id="modal-heading">Change your password</div>
+            <div class="profile-container" id="modal-wrapper">
+                <form id="pw-change-form" method="post" action="../user_services/change_pw.php">
+                    <div class="left-container">
+                        <span>Origin password</span>
+                    </div>
+                    <input type="password" id="origin-pw" name="origin_pw"/>
+                    <div class="left-container">
+                        <div class="valid_chk" id="name_valid">Enter a combination of 2 to 14 numbers and characters.</div>
+                    </div>
+                    <div class="left-container">
+                        <span>New password</span>
+                    </div>
+                    <input type="password" id="new-pw" name="new_pw"/>
+                    <div class="left-container">
+                        <div class="valid_chk" id="name_valid">Enter a combination of 2 to 14 numbers and characters.</div>
+                    </div>
+                    <div class="basic-info-btn-container">
+                        <input type="button" class="negative-btn" id="change-cancel-btn" value="Cancel"/>
+                        <input type="button" id="change-confirm-btn" value="change"/>
+                    </div>
+                    <input type="hidden" id="pet-id" name="pet_id" value="">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="sub-heading">Sensitive information</div>
+    <div class="profile" id="sensitive-info-wrapper">
+        <div class="btn-container"><input type="button" value="Change your password" id="pw-change-btn" /></div>
+        <div class="btn-container"><input type="button" value="Delete your account" id="user-delete-btn" /></div>
     </div>
 </div>
+</body>
 <script src="../user_services/signup_valid_chk.js"></script>
+<script src="../toggle.js"></script>
 <script>
     let birthArray = ['month', 'day', 'year'];
     for(let i = 0; i < birthArray.length; i++) {
@@ -301,12 +371,8 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
         document.getElementById(fieldArray[i]).addEventListener("blur", isInputValid(i));
     }
 
-    document.getElementById('home').addEventListener('click', () => {
+    document.querySelector('.home-wrapper').addEventListener('click', () => {
         location.href = '/wp_project';
-    });
-
-    document.getElementById('profile').addEventListener('click', () => {
-        location.href = 'show_user_profile.php';
     });
 
     let modifyDiv = document.getElementById('modify-div');
@@ -377,6 +443,32 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
 
         if (allFieldsValid) {
             document.getElementById('modify-form').submit();
+        }
+    });
+
+    const pwChangeBtn = document.getElementById('pw-change-btn');
+    const changeCancelBtn = document.getElementById('change-cancel-btn');
+    const changeConfirmBtn = document.getElementById('change-confirm-btn');
+    const userDeleteBtn = document.getElementById('user-delete-btn');
+
+    pwChangeBtn.addEventListener('click', () => {
+       let modal = document.querySelector('.modal');
+       modal.style.display = 'block';
+    });
+
+    changeCancelBtn.addEventListener('click', () => {
+        let modal = document.querySelector('.modal');
+        modal.style.display = 'none';
+    });
+
+    changeConfirmBtn.addEventListener('click', () => {
+        const pwChangeForm = document.getElementById('pw-change-form');
+        pwChangeForm.submit();
+    });
+
+    userDeleteBtn.addEventListener('click', () => {
+        if(confirm('Are you sure you want to delete your account?')) {
+
         }
     });
 </script>
