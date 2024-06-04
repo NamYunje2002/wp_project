@@ -264,7 +264,10 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
     </div>
 </header>
 <div class="container">
+    <div style="display: flex;">
     <div class="heading">Profile</div>
+    <input type="button" value="Logout" id="logout-btn"/>
+    </div>
     <div class="sub-heading">Basic Information</div>
     <div class="profile">
         <div id="profile-info-div" style="text-align: center">
@@ -468,8 +471,14 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
 
     userDeleteBtn.addEventListener('click', () => {
         if(confirm('Are you sure you want to delete your account?')) {
-
+            location.href="../user_services/delete_user.php";
         }
     });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        if(confirm('Are you sure you want to log out?')) {
+            location.href="../user_services/logout.php";
+        }
+    })
 </script>
 </html>
