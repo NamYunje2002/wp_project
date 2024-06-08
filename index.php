@@ -67,7 +67,7 @@ $username = $_SESSION['username'];
             height: 200px;
             border-radius: 20px;
             padding: 20px;
-            margin-top: 50px;
+            margin: 50px auto 0;
         }
 
         .post:hover {
@@ -100,13 +100,12 @@ $username = $_SESSION['username'];
             flex-direction: column;
             flex: 1;
             align-items: center;
-            margin: 20px;
         }
 
         input[type=text] {
             width: 90%;
             height: 35px;
-            margin: 10px;
+            margin: 10px auto;
             padding: 10px 20px;
             background-color: #ffffff;
             border: 1px solid var(--main-color);
@@ -131,7 +130,7 @@ $username = $_SESSION['username'];
             width: 90%;
         }
 
-        div.left-container > span {
+        .left-container > span {
             display: block;
             width: 100%;
             text-align: left;
@@ -157,7 +156,7 @@ $username = $_SESSION['username'];
             height: 1.25em;
         }
 
-        div.valid_chk {
+        .valid_chk {
             width: 250px;
             height: 70px;
             color: #ff0000;
@@ -216,14 +215,14 @@ $username = $_SESSION['username'];
                 width: 90%;
             }
 
-            .btn-container {
-                padding-top: 50px;
-            }
-
             form {
                 flex-direction: column;
                 width: 100%;
                 height: auto;
+            }
+
+            #add-form {
+                margin-bottom: 40px;
             }
 
             .search-div {
@@ -290,15 +289,16 @@ $username = $_SESSION['username'];
                         ?>
                     </select>
                 </div>
-                <div class="btn-container">
-                    <input type="button" class="negative-btn" id="register-cancel-btn" value="Cancel"/>
-                    <input type="button" class="positive-btn" id="register-btn" value="Register"/>
-                </div>
             </form>
+            <div class="btn-container">
+                <input type="button" class="negative-btn" id="register-cancel-btn" value="Cancel"/>
+                <input type="button" class="positive-btn" id="register-btn" value="Register"/>
+            </div>
         </div>
     </div>
     <div class="search-div">
         <div class="search-heading">Search</div>
+        <form>
         <div class="search-wrapper">
             <div class="left-container">
                 <span>Enter the keyword you want to search for.</span>
@@ -311,6 +311,7 @@ $username = $_SESSION['username'];
                 <input type="button" class="positive-btn" id="search-btn" value="Search"/>
             </div>
         </div>
+        </form>
     </div>
     <?php
     include "./db_conn.php";
