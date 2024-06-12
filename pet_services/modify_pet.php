@@ -6,15 +6,9 @@ if (!isset($_SESSION['userid'])) {
     exit;
 }
 
-echo $_POST['pet_type'] . '<br>';
-echo $_POST['pet_name'] . '<br>';
-echo $_POST['pet_month'] . '<br>';
-echo $_POST['pet_year'] . '<br>';
-echo $_POST['pet_gender'] . '<br>';
-
 if (!isset($_POST['pet_type']) || !isset($_POST['pet_name']) || !isset($_POST['pet_month']) || !isset($_POST['pet_year']) || !isset($_POST['pet_gender'])) {
     echo "<script>alert('It is invalid value.')</script>";
-    //echo "<script>location.replace('./show_pet_info.php');</script>";
+    echo "<script>location.replace('./show_pet_info.php');</script>";
     exit;
 }
 
@@ -68,12 +62,12 @@ if ($petImgName != '') {
         $isUpload = 0;
     }
 }
-$insertPetQuery = "UPDATE pets_tb SET PET_TYPE = '$petType', PET_BREED = '$petBreed', PET_NAME = '$petName', PET_BIRTH = '$petBirth', PET_GENDER = '$petGender', PET_DESC = '$petDesc', PET_IMG_NAME = '$petImgName' WHERE pet_owner = '$petOwner' AND pet_id = '$petId'";
+$insertPetQuery = "UPDATE pets_tb SET PET_TYPE = '$petType', PET_BREED = '$petBreed', PET_NAME = '$petName', PET_BIRTH = '$petBirth', PET_GENDER = '$petGender', PET_DESC = '$petDesc' WHERE pet_owner = '$petOwner' AND pet_id = '$petId'";
 
 mysqli_query($db, $insertPetQuery) or die(mysqli_error($db));
 mysqli_close($db);
 
-if ($isUpload) echo "<script>alert('Successful add pet')</script>";
+if ($isUpload) echo "<script>alert('Successful modify pet')</script>";
 else echo "<script>alert('Failed to upload image')</script>";
 
 echo '<script>location.href="/wp_project/views/show_pet_info.php"</script>';

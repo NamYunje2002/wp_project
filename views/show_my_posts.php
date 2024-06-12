@@ -9,7 +9,7 @@ if (!isset($_SESSION['userid'])) {
 $searchKeyword = '';
 if (isset($_GET['search'])) $searchKeyword = $_GET['search'];
 
-$userid = $_SESSION['userid'];
+$userId = $_SESSION['userid'];
 $username = $_SESSION['username'];
 ?>
 <!doctype html>
@@ -18,7 +18,7 @@ $username = $_SESSION['username'];
     <title>main</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="../main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -235,90 +235,47 @@ $username = $_SESSION['username'];
 <header>
     <div class="header-home">
         <div class="home-wrapper" onclick="location.href = '/wp_project'">
-            <img class="logo" id="main-icon" src="./img/logo.png" alt="logo"/>
+            <img class="logo" id="main-icon" src="../img/logo.png" alt="logo"/>
             <span>Along with the pet</span>
         </div>
         <nav id="nav-links">
-            <div class="home-nav" onclick="location.href='views/show_pet_info.php'"><span>My Pets</span></div>
-            <div class="home-nav" onclick="location.href='views/show_my_posts.php'"><span>My Posts</span></div>
+            <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
+            <div class="home-nav" onclick="location.href='./show_my_posts.php'"><span>My Posts</span></div>
         </nav>
     </div>
     <div class="header-icons">
-        <img class="logo" id="profile-icon" src="./img/profile.png" alt="profile"
-             onclick="location.href='views/show_user_info.php'"/>
-        <img class="logo" id="menu-icon" src="./img/menu.png" alt="menu" onclick="toggleMenu()"/>
+        <img class="logo" id="profile-icon" src="../img/profile.png" alt="profile"
+             onclick="location.href='./show_user_info.php'"/>
+        <img class="logo" id="menu-icon" src="../img/menu.png" alt="menu" onclick="toggleMenu()"/>
     </div>
 </header>
 <div class="container">
     <div class="heading">
-        <span>Posts</span><input type="button" value="Write" id="write-btn"/>
-    </div>
-    <div class="add-container">
-        <div id="add-div">
-            <form id="add-form" action="./post_services/add_post.php" method="post">
-                <div class="search-heading">Write your post</div>
-                <div class="left-container">
-                    <span>Subject</span>
-                </div>
-                <input type="text" id="subject" name="subject"/>
-                <div class="left-container">
-                    <div class="valid_chk" id="name_valid">()</div>
-                </div>
-
-                <div class="left-container">
-                    <span>Content</span>
-                </div>
-                <textarea id="content" name="content"></textarea>
-                <div class="left-container">
-                    <div class="valid_chk" id="email_valid">()</div>
-                </div>
-
-                <div class="left-container">
-                    <span>Select your pet.</span>
-                </div>
-                <div id="select-div">
-                    <select id="pet" name="pet">
-                        <option selected>None</option>
-                        <?php
-                        include "./db_conn.php";
-                        $sql = "SELECT pet_id, pet_name FROM pets_tb WHERE pet_owner = '$userid'";
-                        $rsl = mysqli_query($db, $sql);
-                        while ($row = mysqli_fetch_array($rsl)) {
-                            echo "<option value='" . $row['pet_id'] . "'>" . $row['pet_name'] . "</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-            </form>
-            <div class="btn-container">
-                <input type="button" class="negative-btn" id="register-cancel-btn" value="Cancel"/>
-                <input type="button" class="positive-btn" id="register-btn" value="Register"/>
-            </div>
-        </div>
+        <span>My Posts</span><input type="button" value="Write" id="write-btn"/>
     </div>
     <div class="search-div">
         <div class="search-heading">Search</div>
         <form>
-        <div class="search-wrapper">
-            <div class="left-container">
-                <span>Enter the keyword you want to search for.</span>
+            <div class="search-wrapper">
+                <div class="left-container">
+                    <span>Enter the keyword you want to search for.</span>
+                </div>
+                <input type="text" id="search" name="search"/>
+                <div class="left-container">
+                    <div class="valid_chk" id="name_valid">(Warning message)</div>
+                </div>
+                <div class="btn-container">
+                    <input type="button" class="positive-btn" id="search-btn" value="Search"/>
+                </div>
             </div>
-            <input type="text" id="search" name="search"/>
-            <div class="left-container">
-                <div class="valid_chk" id="name_valid">(Warning message)</div>
-            </div>
-            <div class="btn-container">
-                <input type="button" class="positive-btn" id="search-btn" value="Search"/>
-            </div>
-        </div>
         </form>
     </div>
     <?php
-    include "./db_conn.php";
+    include "../db_conn.php";
 
     $selectPostsSql = "SELECT PO.post_id, PO.post_subject, PO.post_date, PO.post_user_id, PO.post_hit, PO.post_like, U.user_name, P.pet_type, P.pet_breed
                         FROM posts_tb PO, users_tb U, pets_tb P 
-                        WHERE U.user_id = PO.post_user_id AND P.pet_id = PO.post_pet_id AND post_subject LIKE '%$searchKeyword%'
+                        WHERE PO.post_user_id = '$userId' AND U.user_id = PO.post_user_id AND P.pet_id = PO.post_pet_id AND post_subject LIKE '%$searchKeyword%'
                         ORDER BY PO.post_id DESC;";
     $rsl = mysqli_query($db, $selectPostsSql);
     mysqli_close($db);
@@ -344,7 +301,7 @@ $username = $_SESSION['username'];
         $postDate = $postMonth . ' / ' . $postDay . ' / ' . $postYear;
 
         echo '<div class="post" onclick="location.href=';
-        echo "'./views/show_post_content.php?id=$postId'";
+        echo "'./show_post_content.php?id=$postId'";
         echo '">';
         echo '<div class="post-subject">' . $postSubject . '</div>';
         echo '<div class="post-pet">';
@@ -360,32 +317,8 @@ $username = $_SESSION['username'];
     echo '</div>';
     ?>
 </div>
-<script src="./toggle.js"></script>
+<script src="../toggle.js"></script>
 <script>
-    let subject = document.getElementById('subject');
-    let content = document.getElementById('content');
-    let pet = document.getElementById('pet');
-
-    let writeBtn = document.getElementById('write-btn');
-    let cancelBtn = document.getElementById('register-cancel-btn');
-    let addContainer = document.querySelector('.add-container');
-    writeBtn.addEventListener('click', () => {
-        addContainer.style.display = 'block';
-        writeBtn.style.visibility = 'hidden';
-    });
-
-    cancelBtn.addEventListener('click', () => {
-        subject.value = '';
-        content.value = '';
-        pet.value = 'None';
-        addContainer.style.display = 'none';
-        writeBtn.style.visibility = '';
-    });
-
-    document.getElementById('register-btn').addEventListener('click', () => {
-        document.getElementById('add-form').submit();
-    });
-
     document.getElementById('search-btn').addEventListener('click', () => {
         let searchKeyword = document.getElementById('search').value;
         location.href = "?search=" + searchKeyword;

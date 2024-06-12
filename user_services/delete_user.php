@@ -20,6 +20,13 @@ mysqli_query($db, $deletePetSql);
 $deletePostSql = "DELETE FROM posts_tb WHERE post_user_id = '$userId'";
 mysqli_query($db, $deletePostSql);
 
+//$updateLikeSql = "UPDATE posts_tb SET post_like = post_like - 1 WHERE user_id = '$userId'";
+//mysqli_query($db, $updateLikeSql);
+//
+//$deleteLikeSql = "DELETE FROM likes_tb WHERE user_id = '$userId'";
+//mysqli_query($db, $deleteLikeSql);
+
+mysqli_close($db);
 session_destroy();
 
 echo "<script>alert('Your account has been deleted.')</script>";

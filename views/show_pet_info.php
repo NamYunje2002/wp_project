@@ -80,14 +80,14 @@ mysqli_close($db);
             display: none;
         }
 
-        #preview-img {
+        #preview-img, #modify-preview-img {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
 
-        #upload-wrapper, #img-upload-btn  {
+        #upload-wrapper, .img-upload-btn  {
             margin-top: 20px;
         }
 
@@ -261,13 +261,14 @@ mysqli_close($db);
             left: 0;
             top: 0;
             width: 100%;
-            height: auto;
+            height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
         }
 
         .modal-content {
             background-color: #fefefe;
+            position:relative;
             margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
@@ -277,7 +278,8 @@ mysqli_close($db);
         }
 
         #modal-wrapper {
-            height: 400px;
+            width: 100%;
+            height: auto;
             padding: 100px 0;
         }
 
@@ -299,12 +301,25 @@ mysqli_close($db);
             }
 
             .basic-info-btn-container {
-                position: static;
-                margin-top: 20px;
+                padding-top: 50px;
             }
 
             .desc-wrapper, .desc {
                 height: auto;
+            }
+
+            form {
+                flex-direction: column;
+                width: 100%;
+                height: auto;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+
+            #modal-wrapper {
+                padding: 10px;
             }
         }
     </style>
@@ -318,8 +333,7 @@ mysqli_close($db);
         </div>
         <nav id="nav-links">
             <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
-            <div class="home-nav"><span>My Posts</span></div>
-            <div class="home-nav"><span>Types</span></div>
+            <div class="home-nav" onclick="location.href='./show_my_posts.php'"><span>My Posts</span></div>
         </nav>
     </div>
     <div class="header-icons">
@@ -342,7 +356,7 @@ mysqli_close($db);
                     <input type="file" id="upload-pet-img" name="pet_img">
                     <img id="preview-img" src="#" alt="preview">
                 </div>
-                <input type="button" value="Upload" id="img-upload-btn"/>
+                <input type="button" value="Upload" class="img-upload-btn" id="img-upload-btn"/>
             </div>
             <div class="info-wrapper">
                 <div class="left-container">
@@ -415,9 +429,9 @@ mysqli_close($db);
                     </div>
                     <div class="pet-img" id="upload-wrapper">
                         <input type="file" id="upload-pet-img" name="pet_img">
-                        <img id="preview-img" src="#" alt="preview">
+                        <img id="modify-preview-img" src="#" alt="preview">
                     </div>
-                    <input type="button" value="Upload" id="img-upload-btn"/>
+                    <input type="button" value="Upload" class="img-upload-btn" id="modify-img-upload-btn"/>
                 </div>
                 <div class="info-wrapper">
                     <div class="left-container">
@@ -522,7 +536,7 @@ mysqli_close($db);
         echo '<div class="info-wrapper">';
         echo '<div class="info">' . $petName . '</div>';
         echo '<div class="info">' . (substr($petBirth, 0, 2)) . ' / ' . $petBirthY . '</div>';
-        echo '<div class="info" birth="'.$petBirth.'">' . $petAge . ' years old (' . $petAgeM . ' months)</div>';
+        echo '<div class="info" birth="'.$petBirth.'">' . $petAge . ' years old<br>(' . $petAgeM . ' months)</div>';
         echo '<div class="info">' . $petGender . '</div>';
         echo '</div>';
 
@@ -608,6 +622,7 @@ mysqli_close($db);
             let petAge = profileContainer.querySelector('.info:nth-child(2)').textContent.split(' / ');
             let petGender = profileContainer.querySelector('.info:nth-child(4)').textContent;
             let petDesc = profileContainer.querySelector('.desc').textContent;
+            let petImgSrc = profileContainer.querySelector('.pet-img').src;
 
             document.getElementById('modify-pet-type').value = petTypeBreed[0];
             updateBreedOptions(1);
@@ -618,6 +633,7 @@ mysqli_close($db);
             document.getElementById('modify-pet-' + petGender.toLowerCase()).checked = true;
             document.getElementById('modify-pet-desc').value = petDesc;
             document.getElementById('modify-modal').style.display = 'block';
+            document.getElementById('modify-preview-img').src = petImgSrc;
         });
     });
 
@@ -638,7 +654,7 @@ mysqli_close($db);
 
     document.getElementById('delete-btn').addEventListener('click', () => {
         if(confirm('Are you sure you want to delete your pet?')) {
-            modifyForm.action = '../pet_service/delete_pet.php';
+            modifyForm.action = '../pet_services/delete_pet.php';
             modifyForm.submit();
         }
     });

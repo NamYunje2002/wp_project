@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!empty($_POST['id']) && !empty($_POST['pw']) ) {
+if (!empty($_POST['id']) && !empty($_POST['pw'])) {
     include "../db_conn.php";
 
     $userId = $_REQUEST['id'];
@@ -10,7 +10,7 @@ if(!empty($_POST['id']) && !empty($_POST['pw']) ) {
     $rsl = mysqli_query($db, $sql);
     $row = $rsl->fetch_array();
 
-    if($row != null) {
+    if ($row != null) {
         $_SESSION['userid'] = $row['user_id'];
         $_SESSION['username'] = $row['user_name'];
         echo "<script>alert('Successful LogIn!')</script>";
@@ -19,11 +19,9 @@ if(!empty($_POST['id']) && !empty($_POST['pw']) ) {
         session_destroy();
     }
     mysqli_close($db);
-    echo "<script>location.href='/wp_project'</script>";
-    exit;
-}else{
+} else {
     echo "<script>alert('Invalid value!')</script>";
-    echo "<script>location.href='/wp_project'</script>";
 }
+echo "<script>location.href='/wp_project'</script>";
 exit();
 ?>

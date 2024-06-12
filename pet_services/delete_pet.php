@@ -30,6 +30,7 @@ if ($rsl == 0) {
 
 $deletePetSql = "DELETE FROM pets_tb WHERE pet_id = '$petId' AND pet_owner = '$petOwner'";
 mysqli_query($db, $deletePetSql) or die(mysqli_error($db));
+mysqli_close($db);
 echo "<script>alert('Successful delete')</script>";
 echo '<script>location.replace("/wp_project/views/show_pet_info.php");</script>';
 exit;

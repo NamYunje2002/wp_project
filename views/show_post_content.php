@@ -243,7 +243,7 @@ mysqli_close($db);
         </div>
         <nav id="nav-links">
             <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
-            <div class="home-nav"><span>My Posts</span></div>
+            <div class="home-nav" onclick="location.href='./show_my_posts.php'"><span>My Posts</span></div>
         </nav>
     </div>
     <div class="header-icons">
@@ -261,7 +261,7 @@ mysqli_close($db);
             <div class="post-subject">Title : <?php echo $postSubject ?></div>
             <div class="post-header2">
                 <div class="pet-type">Type : <?php echo $petType ?></div>
-                <div class="pet-type">Breed : <?php echo $petBreed ?></div>
+                <div class="pet-type">, Breed : <?php echo $petBreed ?></div>
                 <div class="post-writer"><?php echo "Writer : " . $postWriter ?></div>
             </div>
         </div>

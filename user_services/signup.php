@@ -20,7 +20,7 @@ if(!empty($_POST['id']) && !empty($_POST['pw']) && !empty($_POST['name']) && !em
     mysqli_close($db);
 
     echo "<script>alert('Successful SignUP!')</script>";
-    echo '<script>location.href="/wp_project</script>';
+    echo '<script>location.replace("/wp_project")</script>';
 }else{
     echo "<script>alert('Invalid value!')</script>";
     echo '<script>location.href="/wp_project/views/signup.html"</script>';

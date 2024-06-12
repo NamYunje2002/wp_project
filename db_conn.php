@@ -1,7 +1,7 @@
 <?php
 $host = 'localhost:3308';
 $username = 'root';
-$password = '1234';
+$password = '';
 $database = 'wp_project_db';
 
 $db = new mysqli($host, $username, $password, $database) or die(mysqli_connect_error());

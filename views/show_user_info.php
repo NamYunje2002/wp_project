@@ -45,8 +45,14 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             height: auto;
         }
 
-        div.heading {
+        .heading {
             font-size: 34px;
+            margin: 40px 0;
+            font-weight: bold;
+        }
+
+        .heading > span {
+            margin-right: 20px;
             font-weight: bold;
         }
 
@@ -89,9 +95,6 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
-        }
-
-        input[type=button] {
             background-color: var(--main-color);
             color: white;
             border: none;
@@ -254,8 +257,7 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
         </div>
         <nav id="nav-links">
             <div class="home-nav" onclick="location.href='./show_pet_info.php'"><span>My Pets</span></div>
-            <div class="home-nav"><span>My Posts</span></div>
-            <div class="home-nav"><span>Types</span></div>
+            <div class="home-nav" onclick="location.href='./show_my_posts.php'"><span>My Posts</span></div>
         </nav>
     </div>
     <div class="header-icons">
@@ -264,9 +266,8 @@ $userBirth = $userMonth . ' / ' . $userDay . ' / ' . $userYear;
     </div>
 </header>
 <div class="container">
-    <div style="display: flex;">
-    <div class="heading">Profile</div>
-    <input type="button" value="Logout" id="logout-btn"/>
+    <div class="heading">
+        <span>Profile</span><input type="button" value="Logout" id="logout-btn"/>
     </div>
     <div class="sub-heading">Basic Information</div>
     <div class="profile">

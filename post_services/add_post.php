@@ -23,8 +23,7 @@ $subject = $_POST['subject'];
 $content = $_POST['content'];
 $today = date("mdY");
 
-$sql = "INSERT INTO posts_tb(POST_SUBJECT, POST_CONTENT, POST_DATE, POST_USER_ID, POST_PET_ID)
-        VALUES('$subject', '$content', '$today', '$userId', '$petId')";
+$sql = "INSERT INTO posts_tb(POST_SUBJECT, POST_CONTENT, POST_DATE, POST_USER_ID, POST_PET_ID) VALUES('$subject', '$content', '$today', '$userId', $petId)";
 
 mysqli_query($db, $sql);
 mysqli_close($db);
